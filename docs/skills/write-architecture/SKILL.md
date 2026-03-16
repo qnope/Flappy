@@ -6,6 +6,12 @@ This skill enables you to write a comprehensive architecture document for a soft
 
 Always launch several subagents in parallel to write the different sections of the architecture document. Each subagent can focus on a specific module or component, allowing for efficient and detailed documentation.
 
+Don't invent the architecture. No assumption should be made on the architecture. The architecture should be based on the code, and not the opposite. The architecture document should reflect the actual codebase, and not the other way around.
+
+If there is no tests, don't create `specs/architecture/tests/README.md`.
+If there is no examples, don't create `specs/architecture/examples/README.md`.
+If there is no code, just create `specs/architecture/README.md` and explain that there is no code, and that the architecture is based on the design of the library, and not on the code.
+
 ## Steps
 
 1. **Define the Top-Level Structures**

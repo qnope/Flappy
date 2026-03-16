@@ -4,7 +4,7 @@
 
 ### Overview
 
-This skill updates the project architecture documentation in `specs/architecture/`, `specs/architecture/tests/`,  `specs/architecture/performance/`  and `specs/architecture/examples/` based on recent commits to the codebase. It analyzes the commit history to identify changes that impact the architecture and updates the relevant documentation accordingly.
+This skill updates the project architecture documentation in `specs/architecture/`, `specs/architecture/tests/`,  `specs/architecture/performance/`  and `specs/architecture/examples/`. It will read the tasks inside `specs/projects/$1/tasks` or in `specs/done/$1/tasks`.
 
 First thing to do is to display "Architecture documentation update" in the console, so that the user knows what is going on.
 
