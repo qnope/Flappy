@@ -1,1 +1,6 @@
 .claude
+.dart_tool/
+.idea/
+build/
+*.iml
+.metadata
