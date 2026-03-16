@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 512" width="288" height="512">
+  <defs>
+    <!-- Sky gradient -->
+    <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87CEEB"/>
+      <stop offset="100%" stop-color="#E0F0FF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky background -->
+  <rect x="0" y="0" width="288" height="512" fill="url(#skyGradient)"/>
+
+  <!-- Cloud 1 (top-left area) -->
+  <g transform="translate(40, 60)">
+    <!-- Shadow -->
+    <ellipse cx="42" cy="30" rx="40" ry="14" fill="#E8E8E8"/>
+    <ellipse cx="18" cy="26" rx="22" ry="12" fill="#E8E8E8"/>
+    <ellipse cx="66" cy="26" rx="22" ry="12" fill="#E8E8E8"/>
+    <!-- Main cloud body -->
+    <ellipse cx="42" cy="22" rx="40" ry="16" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="18" cy="18" rx="22" ry="14" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="66" cy="18" rx="22" ry="14" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="42" cy="10" rx="28" ry="16" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <!-- Cover internal strokes -->
+    <ellipse cx="42" cy="18" rx="36" ry="12" fill="white"/>
+  </g>
+
+  <!-- Cloud 2 (middle-right area) -->
+  <g transform="translate(150, 140)">
+    <!-- Shadow -->
+    <ellipse cx="50" cy="34" rx="50" ry="16" fill="#E8E8E8"/>
+    <ellipse cx="22" cy="30" rx="26" ry="14" fill="#E8E8E8"/>
+    <ellipse cx="78" cy="30" rx="26" ry="14" fill="#E8E8E8"/>
+    <!-- Main cloud body -->
+    <ellipse cx="50" cy="24" rx="50" ry="18" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="22" cy="20" rx="26" ry="16" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="78" cy="20" rx="26" ry="16" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="50" cy="10" rx="32" ry="18" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <!-- Cover internal strokes -->
+    <ellipse cx="50" cy="20" rx="44" ry="14" fill="white"/>
+  </g>
+
+  <!-- Cloud 3 (lower-left area, smaller) -->
+  <g transform="translate(10, 250)">
+    <!-- Shadow -->
+    <ellipse cx="34" cy="26" rx="32" ry="12" fill="#E8E8E8"/>
+    <ellipse cx="14" cy="22" rx="18" ry="10" fill="#E8E8E8"/>
+    <ellipse cx="54" cy="22" rx="18" ry="10" fill="#E8E8E8"/>
+    <!-- Main cloud body -->
+    <ellipse cx="34" cy="18" rx="32" ry="14" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="14" cy="14" rx="18" ry="12" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="54" cy="14" rx="18" ry="12" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="34" cy="8" rx="22" ry="14" fill="white" stroke="#D0D0D0" stroke-width="0.5"/>
+    <!-- Cover internal strokes -->
+    <ellipse cx="34" cy="14" rx="28" ry="10" fill="white"/>
+  </g>
+</svg>

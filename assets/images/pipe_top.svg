@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 26">
+  <defs>
+    <linearGradient id="capGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#388E3C"/>
+      <stop offset="15%" stop-color="#2E7D32"/>
+      <stop offset="30%" stop-color="#4CAF50"/>
+      <stop offset="50%" stop-color="#66BB6A"/>
+      <stop offset="70%" stop-color="#4CAF50"/>
+      <stop offset="85%" stop-color="#388E3C"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </linearGradient>
+  </defs>
+  <!-- Cap body -->
+  <rect x="0" y="0" width="60" height="26" rx="4" ry="4" fill="url(#capGrad)" stroke="#2E7D32" stroke-width="2"/>
+  <!-- Left highlight strip -->
+  <rect x="9" y="2" width="4" height="22" rx="1" ry="1" fill="#66BB6A" opacity="0.5"/>
+  <!-- Center highlight strip -->
+  <rect x="25" y="2" width="6" height="22" rx="1" ry="1" fill="#81C784" opacity="0.35"/>
+  <!-- Right shadow strip -->
+  <rect x="46" y="2" width="4" height="22" rx="1" ry="1" fill="#1B5E20" opacity="0.3"/>
+  <!-- Bottom edge highlight for 3D effect -->
+  <rect x="1" y="22" width="58" height="3" rx="1" ry="1" fill="#2E7D32" opacity="0.4"/>
+</svg>
