@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'asset_preview_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,6 +10,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const home = AssetPreviewScreen();
+
     final theme = ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
     );
@@ -16,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flappy',
       theme: theme,
-      home: const Scaffold(),
+      home: home,
     );
   }
 }
