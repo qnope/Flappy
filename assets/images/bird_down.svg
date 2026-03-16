@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 24">
+  <!-- Body: yellow/orange round body -->
+  <ellipse cx="15" cy="13" rx="11" ry="9" fill="#FFC107" stroke="#5D4037" stroke-width="1.2"/>
+  <!-- Belly highlight -->
+  <ellipse cx="14" cy="15" rx="7" ry="5" fill="#FFD54F" opacity="0.6"/>
+  <!-- Eye: white circle with black pupil -->
+  <circle cx="21" cy="9" r="4" fill="white" stroke="#5D4037" stroke-width="1"/>
+  <circle cx="22.5" cy="8.5" r="2" fill="#212121"/>
+  <circle cx="23" cy="7.8" r="0.7" fill="white"/>
+  <!-- Beak: orange/red triangular beak -->
+  <polygon points="26,11 33,13 26,15" fill="#FF5722" stroke="#5D4037" stroke-width="0.8"/>
+  <!-- Wing DOWN: positioned below body midline -->
+  <path d="M6,15 Q3,21 10,20 Q14,19 13,15 Z" fill="#FF9800" stroke="#5D4037" stroke-width="1" stroke-linejoin="round"/>
+  <!-- Tail feathers -->
+  <path d="M4,11 Q0,9 1,13 Q2,15 4,14 Z" fill="#FF9800" stroke="#5D4037" stroke-width="0.8"/>
+</svg>
