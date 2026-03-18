@@ -2,13 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-import 'bird_physics.dart';
+import 'background_widget.dart';
+import 'bird.dart';
 import 'bird_widget.dart';
-import 'game_assets.dart';
 import 'game_constants.dart';
 import 'game_state.dart';
+import 'ground_widget.dart';
 import 'wing.dart';
 
 class GameScreen extends StatefulWidget {
@@ -21,7 +20,7 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
   late Ticker _ticker;
-  late BirdPhysics _bird;
+  late Bird _bird;
   Duration _lastTickTime = Duration.zero;
   GamePhase _gamePhase = GamePhase.idle;
   bool _initialized = false;
@@ -29,7 +28,6 @@ class _GameScreenState extends State<GameScreen>
   double _birdStartY = 0;
   double _groundTopY = 0;
   double _idleTime = 0.0;
-  Wing _wingFrame = Wing.mid;
   int _wingSequenceIndex = 0;
   Duration _wingFrameTimer = Duration.zero;
 
@@ -87,27 +85,12 @@ class _GameScreenState extends State<GameScreen>
           _wingSequenceIndex =
               (_wingSequenceIndex + 1) % Wing.animationSequence.length;
         }
-        _wingFrame = Wing.animationSequence[_wingSequenceIndex];
+        _bird.currentWing = Wing.animationSequence[_wingSequenceIndex];
       } else {
-        _wingFrame = Wing.mid;
+        _bird.currentWing = Wing.mid;
         _wingFrameTimer = Duration.zero;
       }
     });
-  }
-
-  double _calculateBirdRotation() {
-    if (_gamePhase == GamePhase.idle) return 0.0;
-
-    final velocity = _bird.velocityY;
-
-    if (velocity <= 0) {
-      final ratio = (velocity / GameConstants.jumpVelocity).clamp(0.0, 1.0);
-      return GameConstants.maxUpRotation * ratio;
-    } else {
-      final ratio =
-          (velocity / GameConstants.maxFallVelocity).clamp(0.0, 1.0);
-      return GameConstants.maxDownRotation * ratio;
-    }
   }
 
   @override
@@ -123,39 +106,27 @@ class _GameScreenState extends State<GameScreen>
           if (!_initialized) {
             _birdX = (screenWidth - GameConstants.birdWidth) / 2;
             _birdStartY = (_groundTopY - GameConstants.birdHeight) / 2;
-            _bird = BirdPhysics(posY: _birdStartY);
+            _bird = Bird(posX: _birdX, posY: _birdStartY);
             _initialized = true;
           }
 
-          final backgroundImage = SvgPicture.asset(
-            GameAssets.background,
-            width: screenWidth,
-            height: screenHeight,
-            fit: BoxFit.cover,
-          );
-
           final background = Positioned.fill(
-            child: backgroundImage,
-          );
-
-          final ground = SvgPicture.asset(
-            GameAssets.ground,
-            width: screenWidth,
-            fit: BoxFit.fitWidth,
+            child: const BackgroundWidget(),
           );
 
           final groundPositioned = Positioned(
             bottom: 0,
             left: 0,
             right: 0,
-            child: ground,
+            child: const GroundWidget(),
           );
 
-          final birdRotation = _calculateBirdRotation();
+          final birdRotation =
+              _gamePhase == GamePhase.idle ? 0.0 : _bird.rotation;
 
           final birdWidget = BirdWidget(
             rotation: birdRotation,
-            wing: _wingFrame,
+            wing: _bird.currentWing,
           );
 
           final bird = Positioned(
