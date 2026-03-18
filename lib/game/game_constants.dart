@@ -21,11 +21,4 @@ class GameConstants {
 
   // Wing animation
   static const Duration wingFrameDuration = Duration(milliseconds: 150);
-
-  static const List<String> wingSprites = [
-    'assets/images/bird_up.svg',
-    'assets/images/bird_mid.svg',
-    'assets/images/bird_down.svg',
-    'assets/images/bird_mid.svg',
-  ];
 }
