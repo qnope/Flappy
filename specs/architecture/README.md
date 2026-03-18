@@ -19,11 +19,16 @@ incrementally, feature by feature.
 ┌──────────────────▼──────────────────────┐
 │          Game Layer (lib/game/)          │
 │                                         │
-│  game_screen.dart   (60fps game loop)   │
-│  bird_physics.dart  (gravity & jump)    │
-│  bird_widget.dart   (SVG sprite render) │
-│  game_constants.dart (tuning values)    │
-│  game_state.dart    (idle / playing)    │
+│  game_screen.dart      (layout shell)   │
+│  game_controller.dart  (game logic)     │
+│  bird.dart             (entity model)   │
+│  bird_widget.dart      (SVG renderer)   │
+│  background_widget.dart (BG renderer)   │
+│  ground_widget.dart    (ground render)  │
+│  wing.dart             (wing enum)      │
+│  game_assets.dart      (asset paths)    │
+│  game_constants.dart   (tuning values)  │
+│  game_state.dart       (idle / playing) │
 └──────────────────┬──────────────────────┘
                    │ loads via flutter_svg
 ┌──────────────────▼──────────────────────┐
@@ -37,8 +42,12 @@ incrementally, feature by feature.
 ┌─────────────────────────────────────────┐
 │              Tests (test/)              │
 │                                         │
-│  bird_physics_test.dart (unit tests)    │
-│  game_screen_test.dart  (widget tests)  │
+│  wing_test.dart           (unit tests)  │
+│  bird_test.dart           (unit tests)  │
+│  game_controller_test.dart(unit tests)  │
+│  background_widget_test.dart (widget)   │
+│  ground_widget_test.dart  (widget)      │
+│  game_screen_test.dart    (widget)      │
 │  game_flow_integration_test.dart        │
 │  asset_existence_test.dart              │
 │  asset_rendering_test.dart              │
@@ -51,13 +60,22 @@ incrementally, feature by feature.
 |-------|------|-------------|
 | App | `lib/main.dart` | Entry point. Creates `MaterialApp` with `GameScreen` as home. |
 | App | `lib/asset_preview_screen.dart` | Scrollable screen previewing all 7 SVG sprites. |
-| Game | `lib/game/game_screen.dart` | Main gameplay screen with 60fps ticker-driven game loop. |
-| Game | `lib/game/bird_physics.dart` | Bird physics model (gravity, jump, ground collision). |
+| Game | `lib/game/game_screen.dart` | Thin layout shell: Ticker, LayoutBuilder, widget tree. |
+| Game | `lib/game/game_controller.dart` | ChangeNotifier owning all game logic and state. |
+| Game | `lib/game/bird.dart` | Bird entity: position, physics, wing state, rotation. |
 | Game | `lib/game/bird_widget.dart` | Stateless SVG bird renderer with rotation. |
+| Game | `lib/game/background_widget.dart` | Stateless background SVG renderer. |
+| Game | `lib/game/ground_widget.dart` | Stateless ground SVG renderer. |
+| Game | `lib/game/wing.dart` | `Wing` enum with asset paths and animation sequence. |
+| Game | `lib/game/game_assets.dart` | Centralized SVG asset path constants. |
 | Game | `lib/game/game_constants.dart` | Physics, dimensions, and animation tuning values. |
 | Game | `lib/game/game_state.dart` | `GamePhase` enum: `idle` and `playing`. |
 | Assets | `assets/images/` | 7 SVG game sprites registered in `pubspec.yaml`. |
-| Tests | `test/bird_physics_test.dart` | Unit tests for gravity, jump, and ground collision. |
+| Tests | `test/wing_test.dart` | Unit tests for Wing enum and animation sequence. |
+| Tests | `test/bird_test.dart` | Unit tests for Bird entity (physics, rotation, wing). |
+| Tests | `test/game_controller_test.dart` | Unit tests for GameController logic. |
+| Tests | `test/background_widget_test.dart` | Widget tests for BackgroundWidget. |
+| Tests | `test/ground_widget_test.dart` | Widget tests for GroundWidget. |
 | Tests | `test/game_screen_test.dart` | Widget tests for rendering, interaction, and animation. |
 | Tests | `test/game_flow_integration_test.dart` | Integration tests for full game flow. |
 | Tests | `test/asset_existence_test.dart` | Unit tests for file existence and SVG validity. |

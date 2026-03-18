@@ -8,18 +8,21 @@ in `lib/game/`.
 
 ## Game Loop
 
-`GameScreen` is a `StatefulWidget` using `SingleTickerProviderStateMixin`.
-A `Ticker` fires every frame (~60fps) and calls `setState` to re-render.
+`GameScreen` is a thin `StatefulWidget` shell using `SingleTickerProviderStateMixin`.
+A `Ticker` fires every frame (~60fps) and calls `GameController.update(dt)`,
+then `setState` to trigger a rebuild.
 
 ```
 Ticker (every frame)
   │
-  ├─ idle phase:  sinusoidal bobbing, wing animation cycling
-  │
-  └─ playing phase:
-       ├─ BirdPhysics.update(dt, gravity)
-       ├─ BirdPhysics.clampToGround(...)
-       └─ wing animation (cycle when rising, freeze when falling)
+  └─ GameController.update(dt)
+       │
+       ├─ idle phase:  sinusoidal bobbing, wing animation cycling
+       │
+       └─ playing phase:
+            ├─ Bird.update(dt, gravity)
+            ├─ Bird.clampToGround(...)
+            └─ wing animation (cycle when rising, freeze when falling)
 ```
 
 ## Game Phases
@@ -31,21 +34,45 @@ The `GamePhase` enum drives two distinct states:
 | `idle` | Off | First tap starts game | Bobs up/down at center, wings animate |
 | `playing` | On | Each tap triggers jump | Falls with gravity, taps give upward impulse |
 
-## Bird Physics (`bird_physics.dart`)
+## GameController (`game_controller.dart`)
 
-A plain Dart class (no Flutter dependency) with three operations:
+A `ChangeNotifier` that owns all game logic:
+- Game phase transitions (idle -> playing)
+- Bird instance and physics updates
+- Idle bobbing animation
+- Wing animation timing
+- Bird rotation computation
 
-- **`update(dt, gravity)`** -- applies gravity to velocity, then velocity to
-  position (Euler integration)
-- **`jump(jumpVelocity)`** -- replaces current velocity with a fixed upward
-  value
-- **`clampToGround(groundTopY, birdHeight)`** -- prevents bird from falling
-  below ground; zeroes velocity on contact
+Fully unit-testable without Flutter widgets.
 
-## Bird Rendering (`bird_widget.dart`)
+## Bird Entity (`bird.dart`)
 
-Stateless widget that takes a `rotation` (degrees) and a `spritePath`. Renders
-the SVG at fixed dimensions and applies `Transform.rotate`.
+A plain Dart class encapsulating:
+- **Position** (`posX`, `posY`) and velocity (`velocityY`)
+- **Wing state** (`currentWing`) for current animation frame
+- **`update(dt, gravity)`** -- Euler integration for gravity
+- **`jump(jumpVelocity)`** -- replaces current velocity
+- **`clampToGround(groundTopY, birdHeight)`** -- ground collision
+- **`rotation`** getter -- computed from velocity
+
+## Wing Enum (`wing.dart`)
+
+Enum with three values (`up`, `mid`, `down`), each carrying an `assetPath`.
+Defines `animationSequence` as a static const list.
+
+## GameAssets (`game_assets.dart`)
+
+Centralized named constants for non-bird SVG asset paths (background, ground,
+pipe, pipeTop).
+
+## Widget Components
+
+- **`BackgroundWidget`** -- Stateless widget rendering background SVG with
+  `BoxFit.cover`.
+- **`GroundWidget`** -- Stateless widget rendering ground SVG with
+  `BoxFit.fitWidth`.
+- **`BirdWidget`** -- Stateless widget taking `Wing` and `rotation` (degrees).
+  Renders SVG at fixed dimensions with `Transform.rotate`.
 
 ## Wing Animation
 
