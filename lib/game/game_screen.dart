@@ -86,12 +86,11 @@ class _GameScreenState extends State<GameScreen>
             wing: _controller.bird.currentWing,
           );
 
-          final bird = Positioned(
+          final alignedY = _controller.bird.posY / screenHeight * 2 - 1;
+
+          final bird = Align(
             key: const ValueKey('bird'),
-            left: _controller.bird.posX,
-            top: _controller.bird.posY,
-            width: GameConstants.birdWidth,
-            height: GameConstants.birdHeight,
+            alignment: Alignment(0, alignedY),
             child: birdWidget,
           );
 
@@ -108,11 +107,9 @@ class _GameScreenState extends State<GameScreen>
               ),
             );
 
-            final tapTextCentered = Positioned(
-              top: screenHeight * 0.25,
-              left: 0,
-              right: 0,
-              child: Center(child: tapText),
+            final tapTextCentered = Align(
+              alignment: Alignment(0, -0.5),
+              child: tapText,
             );
 
             children.add(tapTextCentered);

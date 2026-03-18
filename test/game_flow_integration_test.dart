@@ -15,41 +15,41 @@ void main() {
       // Verify idle state
       expect(find.text('Tap to start'), findsOneWidget);
 
-      final birdIdle = tester.widget<Positioned>(
+      final birdIdle = tester.widget<Align>(
         find.byKey(const ValueKey('bird')),
       );
-      final idleY = birdIdle.top!;
+      final idleY = (birdIdle.alignment as Alignment).y;
 
       // Tap to start
       await tester.tap(find.byType(GestureDetector));
       await tester.pump(const Duration(milliseconds: 16));
 
       // Bird should move upward after tap
-      final birdAfterTap = tester.widget<Positioned>(
+      final birdAfterTap = tester.widget<Align>(
         find.byKey(const ValueKey('bird')),
       );
-      expect(birdAfterTap.top!, lessThan(idleY));
+      expect((birdAfterTap.alignment as Alignment).y, lessThan(idleY));
 
       // Pump frames until bird starts falling (past the peak)
       for (int i = 0; i < 60; i++) {
         await tester.pump(const Duration(milliseconds: 16));
       }
 
-      final birdFalling = tester.widget<Positioned>(
+      final birdFalling = tester.widget<Align>(
         find.byKey(const ValueKey('bird')),
       );
       // Bird should have fallen back past idle position
-      expect(birdFalling.top!, greaterThan(birdAfterTap.top!));
+      expect((birdFalling.alignment as Alignment).y, greaterThan((birdAfterTap.alignment as Alignment).y));
 
       // Tap again to jump
       await tester.tap(find.byType(GestureDetector));
       await tester.pump(const Duration(milliseconds: 16));
 
-      final birdAfterSecondTap = tester.widget<Positioned>(
+      final birdAfterSecondTap = tester.widget<Align>(
         find.byKey(const ValueKey('bird')),
       );
       // Bird should have moved up from the falling position
-      expect(birdAfterSecondTap.top!, lessThan(birdFalling.top!));
+      expect((birdAfterSecondTap.alignment as Alignment).y, lessThan((birdFalling.alignment as Alignment).y));
 
       // Verify tap to start text is gone
       expect(find.text('Tap to start'), findsNothing);
@@ -70,20 +70,20 @@ void main() {
         await tester.pump(const Duration(milliseconds: 16));
       }
 
-      final birdAtGround = tester.widget<Positioned>(
+      final birdAtGround = tester.widget<Align>(
         find.byKey(const ValueKey('bird')),
       );
-      final groundY = birdAtGround.top!;
+      final groundY = (birdAtGround.alignment as Alignment).y;
 
       // Pump more frames — bird Y should NOT increase further
       for (int i = 0; i < 30; i++) {
         await tester.pump(const Duration(milliseconds: 16));
       }
 
-      final birdStill = tester.widget<Positioned>(
+      final birdStill = tester.widget<Align>(
         find.byKey(const ValueKey('bird')),
       );
-      expect(birdStill.top!, closeTo(groundY, 0.001));
+      expect((birdStill.alignment as Alignment).y, closeTo(groundY, 0.001));
     });
 
     testWidgets('bird can exit top of screen', (tester) async {
@@ -103,11 +103,11 @@ void main() {
         await tester.pump(const Duration(milliseconds: 50));
       }
 
-      final birdHigh = tester.widget<Positioned>(
+      final birdHigh = tester.widget<Align>(
         find.byKey(const ValueKey('bird')),
       );
-      // Bird should be above the top of the screen (negative Y)
-      expect(birdHigh.top!, lessThan(0));
+      // Bird should be above the top of the screen (alignment.y < -1)
+      expect((birdHigh.alignment as Alignment).y, lessThan(-1));
     });
   });
 }
