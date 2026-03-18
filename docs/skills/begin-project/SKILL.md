@@ -1,4 +1,4 @@
-# Skill: Create Feature Specification
+# Skill: Create API or Feature Specification
 
 ## Overview
 
@@ -19,13 +19,13 @@ Don't bother with implementation details, the specification should be focused on
 ## Spefication Template
 
 ```markdown
-# <Project Name> API Specification
+# <Project Name> API Specification / Feature Specification
 
 ## 1. Feature Overview
 - Brief description of the feature and its purpose.
 - High-level summary of how it will be implemented.
 
-## 2. API Design
+## 2. API Design / User stories
 - If it is a public API:
   - Detailed description of the API, including:
     - Function signatures
