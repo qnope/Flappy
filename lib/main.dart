@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'asset_preview_screen.dart';
+import 'game/game_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const home = AssetPreviewScreen();
+    const home = GameScreen();
 
     final theme = ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
