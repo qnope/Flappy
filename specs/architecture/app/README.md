@@ -2,30 +2,12 @@
 
 ## Overview
 
-The app layer contains the Flutter widget code that bootstraps the application
-and renders its screens. It currently has two files:
+The app layer contains the Flutter widget code that bootstraps the application.
 
-| File                      | Widget              | Type              |
-|---------------------------|---------------------|-------------------|
-| `main.dart`               | `MyApp`             | StatelessWidget   |
-| `asset_preview_screen.dart` | `AssetPreviewScreen` | StatelessWidget |
-
-## Widget Tree
-
-```
-MyApp (MaterialApp)
- └─ AssetPreviewScreen
-     └─ Scaffold
-         ├─ AppBar ("Asset Preview")
-         └─ SingleChildScrollView
-             └─ Column
-                 ├─ backgroundSection   (full-width SvgPicture + label)
-                 ├─ groundSection       (full-width SvgPicture + label)
-                 ├─ birdSection         (title + Row of 3 labeled birds)
-                 │   └─ Row [birdUp, birdMid, birdDown]  (each height: 60)
-                 └─ pipeSection         (title + pipe assembly Column)
-                     └─ Column [pipeTop, pipeBody, flipped pipeBottomCap]
-```
+| File                        | Widget              | Type              |
+|-----------------------------|---------------------|-------------------|
+| `main.dart`                 | `MyApp`             | StatelessWidget   |
+| `asset_preview_screen.dart` | `AssetPreviewScreen` | StatelessWidget  |
 
 ## Entry Point (`main.dart`)
 
@@ -33,7 +15,12 @@ MyApp (MaterialApp)
 
 - **Title:** `'Flappy'`
 - **Theme:** `ColorScheme.fromSeed(seedColor: Colors.deepPurple)`
-- **Home:** `AssetPreviewScreen()`
+- **Home:** `GameScreen()` (the main gameplay screen from `lib/game/`)
+
+## `AssetPreviewScreen`
+
+A debug/preview screen that displays all 7 SVG assets in a scrollable layout.
+Not used as home in production but kept for asset debugging.
 
 ## Screen: `AssetPreviewScreen`
 
