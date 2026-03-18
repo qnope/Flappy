@@ -6,8 +6,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'bird_physics.dart';
 import 'bird_widget.dart';
+import 'game_assets.dart';
 import 'game_constants.dart';
 import 'game_state.dart';
+import 'wing.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -27,7 +29,8 @@ class _GameScreenState extends State<GameScreen>
   double _birdStartY = 0;
   double _groundTopY = 0;
   double _idleTime = 0.0;
-  int _wingFrameIndex = 0;
+  Wing _wingFrame = Wing.mid;
+  int _wingSequenceIndex = 0;
   Duration _wingFrameTimer = Duration.zero;
 
   @override
@@ -81,11 +84,12 @@ class _GameScreenState extends State<GameScreen>
             Duration(microseconds: (dt * 1000000).round());
         if (_wingFrameTimer >= GameConstants.wingFrameDuration) {
           _wingFrameTimer = Duration.zero;
-          _wingFrameIndex =
-              (_wingFrameIndex + 1) % GameConstants.wingSprites.length;
+          _wingSequenceIndex =
+              (_wingSequenceIndex + 1) % Wing.animationSequence.length;
         }
+        _wingFrame = Wing.animationSequence[_wingSequenceIndex];
       } else {
-        _wingFrameIndex = 1; // bird_mid.svg when falling
+        _wingFrame = Wing.mid;
         _wingFrameTimer = Duration.zero;
       }
     });
@@ -124,7 +128,7 @@ class _GameScreenState extends State<GameScreen>
           }
 
           final backgroundImage = SvgPicture.asset(
-            'assets/images/background.svg',
+            GameAssets.background,
             width: screenWidth,
             height: screenHeight,
             fit: BoxFit.cover,
@@ -135,7 +139,7 @@ class _GameScreenState extends State<GameScreen>
           );
 
           final ground = SvgPicture.asset(
-            'assets/images/ground.svg',
+            GameAssets.ground,
             width: screenWidth,
             fit: BoxFit.fitWidth,
           );
@@ -151,7 +155,7 @@ class _GameScreenState extends State<GameScreen>
 
           final birdWidget = BirdWidget(
             rotation: birdRotation,
-            spritePath: GameConstants.wingSprites[_wingFrameIndex],
+            wing: _wingFrame,
           );
 
           final bird = Positioned(
