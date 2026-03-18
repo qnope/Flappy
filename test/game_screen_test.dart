@@ -78,28 +78,28 @@ void main() {
       await tester.pumpWidget(createTestApp());
       await tester.pump();
 
-      final birdBefore = tester.widget<Positioned>(
+      final birdBefore = tester.widget<Align>(
         find.byKey(const ValueKey('bird')),
       );
-      final initialY = birdBefore.top!;
+      final initialY = (birdBefore.alignment as Alignment).y;
 
       await tester.tap(find.byType(GestureDetector));
       await tester.pump(const Duration(milliseconds: 16));
 
-      final birdAfterTap = tester.widget<Positioned>(
+      final birdAfterTap = tester.widget<Align>(
         find.byKey(const ValueKey('bird')),
       );
-      expect(birdAfterTap.top!, lessThan(initialY));
+      expect((birdAfterTap.alignment as Alignment).y, lessThan(initialY));
 
       // Pump many frames to let gravity pull bird back down past the tap position
       for (int i = 0; i < 60; i++) {
         await tester.pump(const Duration(milliseconds: 16));
       }
 
-      final birdAfterFall = tester.widget<Positioned>(
+      final birdAfterFall = tester.widget<Align>(
         find.byKey(const ValueKey('bird')),
       );
-      expect(birdAfterFall.top!, greaterThan(birdAfterTap.top!));
+      expect((birdAfterFall.alignment as Alignment).y, greaterThan((birdAfterTap.alignment as Alignment).y));
     });
   });
 
