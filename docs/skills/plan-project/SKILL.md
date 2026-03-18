@@ -17,7 +17,6 @@ If questions arise, ask the user for clarification using the AskUserQuestion too
 - Each `<task_number>_<task_name>.md` contains:
   - Task/module summary
   - Implementation steps (with file paths, class/function names)
-  - CMake registration notes
   - Dependencies (internal and external)
   - Test plan (test file locations, test cases)
   - Any special notes or design considerations
