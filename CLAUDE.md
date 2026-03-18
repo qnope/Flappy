@@ -10,5 +10,22 @@ Flappy bird like game
 4. Image must be svg ones
 
 ## Rules
-1. Avoid nested construction, prefer declaring one element, and give it as argument to another one
-2. Always add new feature incrementally
+1. Almost never use nested construction, prefer declaring one element, and give it as argument to another one
+    - avoid ```cpp
+
+    ObjectA {
+        subObject: ObjectB {
+            subSubObject: ObjectC{
+
+            }
+        }
+    }
+   ```
+   - Prefer do ```cpp
+        objectC = ObjectC{};
+        objectB = ObjectB { subSubObject: objectC };
+        objectA = ObjectA { subObject: objectB };
+   ```
+3. Always add new feature incrementally
+4. Always make reusable component
+5. Try to optimize for performance when it's possible.
