@@ -11,6 +11,8 @@ class GameController extends ChangeNotifier {
   GamePhase gamePhase = GamePhase.idle;
   late Bird bird;
   double groundTopY = 0;
+  double groundScrollOffset = 0.0;
+  double cloudsScrollOffset = 0.0;
   double _birdStartY = 0;
   double _idleTime = 0.0;
   int _wingSequenceIndex = 0;
@@ -44,6 +46,9 @@ class GameController extends ChangeNotifier {
   void update(double dt) {
     if (!_initialized) return;
     if (dt > 0.1) return;
+
+    groundScrollOffset += GameConstants.groundScrollSpeed * dt;
+    cloudsScrollOffset += GameConstants.cloudsScrollSpeed * dt;
 
     if (gamePhase == GamePhase.idle) {
       _idleTime += dt;
