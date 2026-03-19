@@ -39,6 +39,7 @@ Tests `GameController` logic without Flutter widgets.
 | **Idle bobbing** | Bird oscillates vertically over time |
 | **Tap to start** | Phase transitions from idle to playing |
 | **Playing physics** | Gravity applied, jump on tap |
+| **Scroll offsets** | Start at zero, update each frame, skip large dt, ground faster than clouds |
 | **Wing animation** | Sprite cycles during idle and rising |
 
 ### `test/background_widget_test.dart` (Widget)
@@ -52,8 +53,24 @@ Tests `GameController` logic without Flutter widgets.
 
 | Group | What is verified |
 |---|---|
-| **Rendering** | GroundWidget renders SvgPicture with correct asset |
-| **Fit** | Uses BoxFit.fitWidth to scale to width |
+| **Rendering** | GroundWidget renders scrolling tiles with correct asset |
+| **ScrollOffset** | Accepts scrollOffset parameter for horizontal scrolling |
+
+### `test/clouds_widget_test.dart` (Widget)
+
+| Group | What is verified |
+|---|---|
+| **Rendering** | CloudsWidget renders with scrollOffset without errors |
+| **Composition** | Contains ScrollingLayerWidget with two SVG tiles |
+
+### `test/scrolling_layer_widget_test.dart` (Widget)
+
+| Group | What is verified |
+|---|---|
+| **Rendering** | Renders with valid SVG asset |
+| **Tiling** | Renders two adjacent SVG tiles |
+| **Clipping** | Uses UnconstrainedBox with Clip.hardEdge |
+| **Scroll offset** | Renders correctly with non-zero offset |
 
 ### `test/game_screen_test.dart` (Widget)
 
@@ -61,7 +78,7 @@ Tests `GameScreen` via `tester.pumpWidget()` with real SVG rendering.
 
 | Group | What is verified |
 |---|---|
-| **Rendering** | Background, ground, bird, and "Tap to start" text present |
+| **Rendering** | Background, ground, clouds, bird, and "Tap to start" text present |
 | **Tap interaction** | First tap starts game (removes idle text) |
 | **Wing animation** | Sprite changes over time when idle |
 | **Bird rotation** | Rotation applied after tap and gravity |
@@ -79,7 +96,7 @@ Tests the complete gameplay sequence end-to-end.
 
 | Group | What is verified |
 |---|---|
-| **SVG existence** | All 7 SVG files exist in `assets/images/` |
+| **SVG existence** | All 8 SVG files exist in `assets/images/` |
 | **SVG validity** | Each file has `<svg>` root element and `viewBox` attribute |
 
 ### `test/asset_rendering_test.dart` (Widget)

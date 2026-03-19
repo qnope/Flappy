@@ -18,6 +18,8 @@ Ticker (every frame)
   │
   └─ GameController.update(dt)
        │
+       ├─ scroll offsets: ground and clouds advance continuously
+       │
        ├─ idle phase:  sinusoidal bobbing, wing animation cycling
        │
        ├─ playing phase:
@@ -46,6 +48,10 @@ A `ChangeNotifier` that owns all game logic:
 - Idle bobbing animation
 - Wing animation timing
 - Bird rotation computation
+- Scroll offsets (`groundScrollOffset`, `cloudsScrollOffset`) updated every frame
+
+Scroll offsets advance continuously in both idle and playing phases. Large
+`dt` values (> 0.1s) are skipped to avoid visual jumps.
 
 Fully unit-testable without Flutter widgets.
 
@@ -67,14 +73,20 @@ Defines `animationSequence` as a static const list.
 ## GameAssets (`game_assets.dart`)
 
 Centralized named constants for non-bird SVG asset paths (background, ground,
-pipe, pipeTop).
+pipe, pipeTop, clouds).
 
 ## Widget Components
 
-- **`BackgroundWidget`** -- Stateless widget rendering background SVG with
+- **`BackgroundWidget`** -- Stateless widget rendering static sky SVG with
   `BoxFit.cover`.
-- **`GroundWidget`** -- Stateless widget rendering ground SVG with
-  `BoxFit.fitWidth`.
+- **`ScrollingLayerWidget`** -- Reusable stateless widget for infinite
+  horizontal scrolling. Takes an `assetPath`, `scrollOffset`, and `BoxFit`.
+  Renders two adjacent SVG tiles in a `Row`, wrapped in `Transform.translate`
+  with modulo wrapping, and clipped via `UnconstrainedBox(clipBehavior: Clip.hardEdge)`.
+- **`GroundWidget`** -- Wrapper around `ScrollingLayerWidget` with ground asset
+  and `BoxFit.fitWidth`. Takes a `scrollOffset` parameter.
+- **`CloudsWidget`** -- Wrapper around `ScrollingLayerWidget` with clouds asset
+  and `BoxFit.cover`. Takes a `scrollOffset` parameter.
 - **`BirdWidget`** -- Stateless widget taking `Wing` and `rotation` (degrees).
   Renders SVG at fixed dimensions with `Transform.rotate`.
 
@@ -95,4 +107,5 @@ Rotation is proportional to vertical velocity:
 
 All tuning values are centralized: gravity (1200 px/s²), jump velocity
 (-400 px/s), bird dimensions (51x36), bob amplitude/frequency, rotation
-limits, and wing frame duration.
+limits, wing frame duration, and parallax scroll speeds (ground: 120 px/s,
+clouds: 30 px/s).

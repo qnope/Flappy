@@ -11,7 +11,8 @@ All visual assets are SVG files stored in `assets/images/` and declared in
 
 | File | ViewBox | Purpose |
 |------|---------|---------|
-| `background.svg` | 0 0 288 512 | Sky gradient with clouds |
+| `background.svg` | 0 0 288 512 | Sky gradient (static, no clouds) |
+| `clouds.svg` | 0 0 576 200 | Tileable clouds (transparent background) |
 | `ground.svg` | 0 0 336 112 | Tileable ground strip with grass |
 | `bird_up.svg` | 0 0 34 24 | Bird with wings raised |
 | `bird_mid.svg` | 0 0 34 24 | Bird with wings horizontal |
@@ -41,10 +42,16 @@ A single pipe obstacle is composed of three parts stacked vertically:
 The body (`pipe.svg`) is stretched to the required height; the cap keeps its
 fixed 60x26 size.
 
-### Ground Tiling
+### Parallax Scrolling
 
-`ground.svg` is designed for seamless horizontal tiling. Multiple instances
-are placed side-by-side and scrolled leftward to create continuous motion.
+Both `ground.svg` and `clouds.svg` are designed for seamless horizontal
+tiling. `ScrollingLayerWidget` renders two adjacent copies and translates
+them leftward, wrapping via modulo to create infinite scrolling.
+
+Parallax depth is achieved through different scroll speeds:
+- **Ground:** 120 px/s (foreground, fastest)
+- **Clouds:** 30 px/s (mid-ground, slowest)
+- **Background:** static sky (no scrolling)
 
 ## Adding a New Asset
 
