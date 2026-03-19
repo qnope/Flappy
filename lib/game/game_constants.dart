@@ -21,4 +21,8 @@ class GameConstants {
 
   // Wing animation
   static const Duration wingFrameDuration = Duration(milliseconds: 150);
+
+  // Parallax scroll speeds (pixels per second)
+  static const double groundScrollSpeed = 120.0;
+  static const double cloudsScrollSpeed = 30.0;
 }
