@@ -9,9 +9,8 @@ in `lib/game/`.
 ## Game Loop
 
 `GameScreen` is a thin `StatefulWidget` shell using `SingleTickerProviderStateMixin`.
-A `Ticker` fires every frame (~60fps) and calls `GameController.update(dt)`,
-which calls `notifyListeners()`. A `ListenableBuilder` listening to
-`GameController` triggers the rebuild automatically -- no manual `setState`.
+A `Ticker` fires every frame (~60fps) and calls `GameController.update(dt)`.
+`GameScreen` then calls `setState()` to trigger a rebuild with the updated state.
 
 ```
 Ticker (every frame)
@@ -27,8 +26,7 @@ Ticker (every frame)
        │    ├─ Bird.clampToGround(...)
        │    └─ wing animation (cycle when rising, freeze when falling)
        │
-       └─ notifyListeners()
-            └─ ListenableBuilder rebuilds widget tree
+       └─ GameScreen calls setState() to rebuild widget tree
 ```
 
 ## Game Phases
@@ -42,7 +40,7 @@ The `GamePhase` enum drives two distinct states:
 
 ## GameController (`game_controller.dart`)
 
-A `ChangeNotifier` that owns all game logic:
+A plain Dart class that owns all game logic:
 - Game phase transitions (idle -> playing)
 - Bird instance and physics updates
 - Idle bobbing animation
