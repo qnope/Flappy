@@ -171,7 +171,6 @@ void main() {
       final freshController = GameController();
       // Should not throw
       freshController.update(0.016);
-      freshController.dispose();
     });
 
     test('update with dt > 0.1 is skipped', () {
