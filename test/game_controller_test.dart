@@ -129,6 +129,43 @@ void main() {
     });
   });
 
+  group('Scroll offsets', () {
+    test('scroll offsets start at zero', () {
+      expect(controller.groundScrollOffset, 0.0);
+      expect(controller.cloudsScrollOffset, 0.0);
+    });
+
+    test('scroll offsets update after update', () {
+      controller.update(0.05);
+      expect(controller.groundScrollOffset, GameConstants.groundScrollSpeed * 0.05);
+      expect(controller.cloudsScrollOffset, GameConstants.cloudsScrollSpeed * 0.05);
+    });
+
+    test('scroll offsets update during idle phase', () {
+      controller.update(0.016);
+      expect(controller.groundScrollOffset, greaterThan(0.0));
+      expect(controller.cloudsScrollOffset, greaterThan(0.0));
+    });
+
+    test('scroll offsets update during playing phase', () {
+      controller.onTap(); // transition to playing
+      controller.update(0.016);
+      expect(controller.groundScrollOffset, greaterThan(0.0));
+      expect(controller.cloudsScrollOffset, greaterThan(0.0));
+    });
+
+    test('scroll offsets unchanged when dt > 0.1', () {
+      controller.update(0.2);
+      expect(controller.groundScrollOffset, 0.0);
+      expect(controller.cloudsScrollOffset, 0.0);
+    });
+
+    test('ground scrolls faster than clouds', () {
+      controller.update(0.016);
+      expect(controller.groundScrollOffset, greaterThan(controller.cloudsScrollOffset));
+    });
+  });
+
   group('Edge cases', () {
     test('update before initialize is a no-op', () {
       final freshController = GameController();
