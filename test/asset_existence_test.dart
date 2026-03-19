@@ -8,6 +8,7 @@ void main() {
   const svgFiles = [
     'background.svg',
     'ground.svg',
+    'clouds.svg',
     'bird_up.svg',
     'bird_mid.svg',
     'bird_down.svg',

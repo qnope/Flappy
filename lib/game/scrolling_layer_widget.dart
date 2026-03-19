@@ -37,6 +37,7 @@ class ScrollingLayerWidget extends StatelessWidget {
         final sizedTile2 = SizedBox(width: tileWidth, child: tile2);
 
         final row = Row(
+          mainAxisSize: MainAxisSize.min,
           children: [sizedTile1, sizedTile2],
         );
 
@@ -45,7 +46,11 @@ class ScrollingLayerWidget extends StatelessWidget {
           child: row,
         );
 
-        final clipped = ClipRect(child: translated);
+        final clipped = UnconstrainedBox(
+          clipBehavior: Clip.hardEdge,
+          alignment: Alignment.centerLeft,
+          child: translated,
+        );
 
         return clipped;
       },
