@@ -33,12 +33,12 @@ class _GameScreenState extends State<GameScreen>
   @override
   void dispose() {
     _ticker.dispose();
-    _controller.dispose();
     super.dispose();
   }
 
   void _onTap() {
     _controller.onTap();
+    setState(() {});
   }
 
   void _onTick(Duration elapsed) {
@@ -48,6 +48,7 @@ class _GameScreenState extends State<GameScreen>
     _lastTickTime = elapsed;
 
     _controller.update(dt);
+    setState(() {});
   }
 
   @override
@@ -68,82 +69,77 @@ class _GameScreenState extends State<GameScreen>
             );
           }
 
-          return ListenableBuilder(
-            listenable: _controller,
-            builder: (context, child) {
-              final groundOffset = _controller.groundScrollOffset;
-              final cloudsOffset = _controller.cloudsScrollOffset;
+          final groundOffset = _controller.groundScrollOffset;
+          final cloudsOffset = _controller.cloudsScrollOffset;
 
-              final background = Positioned.fill(
-                child: const BackgroundWidget(),
-              );
+          final background = Positioned.fill(
+            child: const BackgroundWidget(),
+          );
 
-              final clouds = Positioned.fill(
-                child: CloudsWidget(scrollOffset: cloudsOffset),
-              );
+          final clouds = Positioned.fill(
+            child: CloudsWidget(scrollOffset: cloudsOffset),
+          );
 
-              final groundPositioned = Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: GroundWidget(
-                  scrollOffset: groundOffset,
-                ),
-              );
+          final groundPositioned = Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: GroundWidget(
+              scrollOffset: groundOffset,
+            ),
+          );
 
-              final birdWidget = BirdWidget(
-                rotation: _controller.birdRotation,
-                wing: _controller.bird.currentWing,
-              );
+          final birdWidget = BirdWidget(
+            rotation: _controller.birdRotation,
+            wing: _controller.bird.currentWing,
+          );
 
-              final alignedY =
-                  _controller.bird.posY / screenHeight * 2 - 1;
+          final alignedY =
+              _controller.bird.posY / screenHeight * 2 - 1;
 
-              final bird = Align(
-                key: const ValueKey('bird'),
-                alignment: Alignment(0, alignedY),
-                child: birdWidget,
-              );
+          final bird = Align(
+            key: const ValueKey('bird'),
+            alignment: Alignment(0, alignedY),
+            child: birdWidget,
+          );
 
-              final children = <Widget>[
-                background,
-                clouds,
-                bird,
-                groundPositioned,
-              ];
+          final children = <Widget>[
+            background,
+            clouds,
+            bird,
+            groundPositioned,
+          ];
 
-              if (_controller.gamePhase == GamePhase.idle) {
-                final tapText = const Text(
-                  'Tap to start',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(blurRadius: 4, color: Colors.black54),
-                    ],
-                  ),
-                );
+          if (_controller.gamePhase == GamePhase.idle) {
+            final tapText = const Text(
+              'Tap to start',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(blurRadius: 4, color: Colors.black54),
+                ],
+              ),
+            );
 
-                final tapTextCentered = Align(
-                  alignment: Alignment(0, -0.5),
-                  child: tapText,
-                );
+            final tapTextCentered = Align(
+              alignment: Alignment(0, -0.5),
+              child: tapText,
+            );
 
-                children.add(tapTextCentered);
-              }
+            children.add(tapTextCentered);
+          }
 
-              final stack = Stack(
-                fit: StackFit.expand,
-                children: children,
-              );
+          final stack = Stack(
+            fit: StackFit.expand,
+            children: children,
+          );
 
-              return GestureDetector(
-                onTap: _onTap,
-                behavior: HitTestBehavior.opaque,
-                child: stack,
-              );
-            },
+          return GestureDetector(
+            onTap: _onTap,
+            behavior: HitTestBehavior.opaque,
+            child: stack,
           );
         },
       ),
