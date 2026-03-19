@@ -10,7 +10,8 @@ in `lib/game/`.
 
 `GameScreen` is a thin `StatefulWidget` shell using `SingleTickerProviderStateMixin`.
 A `Ticker` fires every frame (~60fps) and calls `GameController.update(dt)`,
-then `setState` to trigger a rebuild.
+which calls `notifyListeners()`. A `ListenableBuilder` listening to
+`GameController` triggers the rebuild automatically -- no manual `setState`.
 
 ```
 Ticker (every frame)
@@ -19,10 +20,13 @@ Ticker (every frame)
        │
        ├─ idle phase:  sinusoidal bobbing, wing animation cycling
        │
-       └─ playing phase:
-            ├─ Bird.update(dt, gravity)
-            ├─ Bird.clampToGround(...)
-            └─ wing animation (cycle when rising, freeze when falling)
+       ├─ playing phase:
+       │    ├─ Bird.update(dt, gravity)
+       │    ├─ Bird.clampToGround(...)
+       │    └─ wing animation (cycle when rising, freeze when falling)
+       │
+       └─ notifyListeners()
+            └─ ListenableBuilder rebuilds widget tree
 ```
 
 ## Game Phases
@@ -48,7 +52,7 @@ Fully unit-testable without Flutter widgets.
 ## Bird Entity (`bird.dart`)
 
 A plain Dart class encapsulating:
-- **Position** (`posX`, `posY`) and velocity (`velocityY`)
+- **Position** (`posY`) and velocity (`velocityY`)
 - **Wing state** (`currentWing`) for current animation frame
 - **`update(dt, gravity)`** -- Euler integration for gravity
 - **`jump(jumpVelocity)`** -- replaces current velocity
