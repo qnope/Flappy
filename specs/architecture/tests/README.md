@@ -35,7 +35,7 @@ Tests `GameController` logic without Flutter widgets.
 
 | Group | What is verified |
 |---|---|
-| **Initial state** | Phase is idle, bird centered |
+| **Initial state** | Phase is idle, bird centered vertically |
 | **Idle bobbing** | Bird oscillates vertically over time |
 | **Tap to start** | Phase transitions from idle to playing |
 | **Playing physics** | Gravity applied, jump on tap |

@@ -62,7 +62,7 @@ incrementally, feature by feature.
 | App | `lib/asset_preview_screen.dart` | Scrollable screen previewing all 7 SVG sprites. |
 | Game | `lib/game/game_screen.dart` | Thin layout shell: Ticker, LayoutBuilder, widget tree. |
 | Game | `lib/game/game_controller.dart` | ChangeNotifier owning all game logic and state. |
-| Game | `lib/game/bird.dart` | Bird entity: position, physics, wing state, rotation. |
+| Game | `lib/game/bird.dart` | Bird entity: vertical position, physics, wing state, rotation. |
 | Game | `lib/game/bird_widget.dart` | Stateless SVG bird renderer with rotation. |
 | Game | `lib/game/background_widget.dart` | Stateless background SVG renderer. |
 | Game | `lib/game/ground_widget.dart` | Stateless ground SVG renderer. |
