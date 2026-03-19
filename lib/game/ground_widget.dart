@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'game_assets.dart';
+import 'scrolling_layer_widget.dart';
 
 class GroundWidget extends StatelessWidget {
-  const GroundWidget({super.key});
+  final double scrollOffset;
+
+  const GroundWidget({super.key, required this.scrollOffset});
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      GameAssets.ground,
+    return ScrollingLayerWidget(
+      assetPath: GameAssets.ground,
+      scrollOffset: scrollOffset,
       fit: BoxFit.fitWidth,
     );
   }
