@@ -20,11 +20,10 @@ class GameController extends ChangeNotifier {
   bool get initialized => _initialized;
 
   void initialize({
-    required double birdX,
     required double birdStartY,
     required double groundTopY,
   }) {
-    bird = Bird(posX: birdX, posY: birdStartY);
+    bird = Bird(posY: birdStartY);
     _birdStartY = birdStartY;
     this.groundTopY = groundTopY;
     _initialized = true;

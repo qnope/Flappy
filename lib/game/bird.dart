@@ -2,13 +2,11 @@ import 'game_constants.dart';
 import 'wing.dart';
 
 class Bird {
-  double posX;
   double posY;
   double velocityY;
   Wing currentWing;
 
   Bird({
-    required this.posX,
     required this.posY,
     this.velocityY = 0.0,
     this.currentWing = Wing.mid,

@@ -10,7 +10,6 @@ void main() {
   setUp(() {
     controller = GameController();
     controller.initialize(
-      birdX: 100,
       birdStartY: 200,
       groundTopY: 400,
     );
