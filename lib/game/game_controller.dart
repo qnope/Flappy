@@ -1,13 +1,11 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
-
 import 'bird.dart';
 import 'game_constants.dart';
 import 'game_state.dart';
 import 'wing.dart';
 
-class GameController extends ChangeNotifier {
+class GameController {
   GamePhase gamePhase = GamePhase.idle;
   late Bird bird;
   double groundTopY = 0;
@@ -36,10 +34,8 @@ class GameController extends ChangeNotifier {
       gamePhase = GamePhase.playing;
       bird.posY = _birdStartY;
       bird.jump(GameConstants.jumpVelocity);
-      notifyListeners();
     } else if (gamePhase == GamePhase.playing) {
       bird.jump(GameConstants.jumpVelocity);
-      notifyListeners();
     }
   }
 
@@ -62,7 +58,6 @@ class GameController extends ChangeNotifier {
     }
 
     _updateWingAnimation(dt);
-    notifyListeners();
   }
 
   double get birdRotation {
