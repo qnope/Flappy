@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 512" width="288" height="512">
+
+  <!-- Cloud 1 (upper-left, medium) -->
+  <g transform="translate(30, 70)" opacity="0.9">
+    <ellipse cx="38" cy="28" rx="36" ry="13" fill="#E8E8E8"/>
+    <ellipse cx="16" cy="24" rx="20" ry="11" fill="#E8E8E8"/>
+    <ellipse cx="60" cy="24" rx="20" ry="11" fill="#E8E8E8"/>
+    <ellipse cx="38" cy="20" rx="36" ry="15" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="16" cy="16" rx="20" ry="13" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="60" cy="16" rx="20" ry="13" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="38" cy="9" rx="24" ry="14" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="38" cy="16" rx="32" ry="11" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Cloud 2 (center-right, large) -->
+  <g transform="translate(155, 130)" opacity="0.85">
+    <ellipse cx="44" cy="32" rx="44" ry="14" fill="#E8E8E8"/>
+    <ellipse cx="18" cy="28" rx="24" ry="12" fill="#E8E8E8"/>
+    <ellipse cx="70" cy="28" rx="24" ry="12" fill="#E8E8E8"/>
+    <ellipse cx="44" cy="22" rx="44" ry="16" fill="#F0F0F0" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="18" cy="18" rx="24" ry="14" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="70" cy="18" rx="24" ry="14" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="44" cy="9" rx="28" ry="16" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="44" cy="18" rx="38" ry="12" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Cloud 3 (left of center, small) -->
+  <g transform="translate(100, 55)" opacity="0.8">
+    <ellipse cx="26" cy="22" rx="26" ry="10" fill="#E8E8E8"/>
+    <ellipse cx="10" cy="18" rx="14" ry="9" fill="#E8E8E8"/>
+    <ellipse cx="42" cy="18" rx="14" ry="9" fill="#E8E8E8"/>
+    <ellipse cx="26" cy="14" rx="26" ry="12" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="10" cy="10" rx="14" ry="10" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="42" cy="10" rx="14" ry="10" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="26" cy="5" rx="18" ry="11" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="26" cy="10" rx="22" ry="8" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Cloud 4 (wraps across right-left edge for seamless tiling) -->
+  <!-- Right portion: cloud starts at x=248, extends to x=288 (right edge) -->
+  <g transform="translate(248, 170)" opacity="0.9">
+    <ellipse cx="30" cy="26" rx="32" ry="12" fill="#E8E8E8"/>
+    <ellipse cx="12" cy="22" rx="18" ry="10" fill="#E8E8E8"/>
+    <ellipse cx="48" cy="22" rx="18" ry="10" fill="#E8E8E8"/>
+    <ellipse cx="30" cy="18" rx="32" ry="14" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="12" cy="14" rx="18" ry="12" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="48" cy="14" rx="18" ry="12" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="30" cy="7" rx="22" ry="12" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="30" cy="14" rx="28" ry="10" fill="#FFFFFF"/>
+  </g>
+  <!-- Left portion: same cloud shifted left by 288 (the viewBox width) -->
+  <g transform="translate(-40, 170)" opacity="0.9">
+    <ellipse cx="30" cy="26" rx="32" ry="12" fill="#E8E8E8"/>
+    <ellipse cx="12" cy="22" rx="18" ry="10" fill="#E8E8E8"/>
+    <ellipse cx="48" cy="22" rx="18" ry="10" fill="#E8E8E8"/>
+    <ellipse cx="30" cy="18" rx="32" ry="14" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="12" cy="14" rx="18" ry="12" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="48" cy="14" rx="18" ry="12" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="30" cy="7" rx="22" ry="12" fill="#FFFFFF" stroke="#D0D0D0" stroke-width="0.5"/>
+    <ellipse cx="30" cy="14" rx="28" ry="10" fill="#FFFFFF"/>
+  </g>
+
+</svg>
