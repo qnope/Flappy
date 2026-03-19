@@ -78,7 +78,9 @@ class _GameScreenState extends State<GameScreen>
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: const GroundWidget(),
+                child: GroundWidget(
+                  scrollOffset: _controller.groundScrollOffset,
+                ),
               );
 
               final birdWidget = BirdWidget(

@@ -6,10 +6,10 @@ import 'package:flappy/game/ground_widget.dart';
 
 void main() {
   group('GroundWidget', () {
-    testWidgets('renders an SvgPicture with the ground asset', (tester) async {
+    testWidgets('renders SvgPicture widgets for scrolling ground tiles', (tester) async {
       final app = MaterialApp(
         home: Scaffold(
-          body: const GroundWidget(),
+          body: const GroundWidget(scrollOffset: 0.0),
         ),
       );
 
@@ -17,9 +17,9 @@ void main() {
       await tester.pump();
 
       final svgFinder = find.byType(SvgPicture);
-      expect(svgFinder, findsOneWidget);
+      expect(svgFinder, findsAtLeastNWidgets(1));
 
-      final svgWidget = tester.widget<SvgPicture>(svgFinder);
+      final svgWidget = tester.widget<SvgPicture>(svgFinder.first);
       final bytesLoader = svgWidget.bytesLoader;
       expect(bytesLoader, isA<SvgAssetLoader>());
       expect(
@@ -33,7 +33,7 @@ void main() {
       final constrainedGround = SizedBox(
         width: 300,
         height: 100,
-        child: const GroundWidget(),
+        child: const GroundWidget(scrollOffset: 0.0),
       );
 
       final app = MaterialApp(
@@ -46,7 +46,7 @@ void main() {
       await tester.pump();
 
       expect(find.byType(GroundWidget), findsOneWidget);
-      expect(find.byType(SvgPicture), findsOneWidget);
+      expect(find.byType(SvgPicture), findsAtLeastNWidgets(1));
       expect(tester.takeException(), isNull);
     });
   });
