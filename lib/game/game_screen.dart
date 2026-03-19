@@ -47,7 +47,6 @@ class _GameScreenState extends State<GameScreen>
     _lastTickTime = elapsed;
 
     _controller.update(dt);
-    setState(() {});
   }
 
   @override
@@ -61,69 +60,79 @@ class _GameScreenState extends State<GameScreen>
           final groundTopY = screenHeight - groundRenderedHeight;
 
           if (!_controller.initialized) {
-            final birdX = (screenWidth - GameConstants.birdWidth) / 2;
             final birdStartY = (groundTopY - GameConstants.birdHeight) / 2;
             _controller.initialize(
-              birdX: birdX,
               birdStartY: birdStartY,
               groundTopY: groundTopY,
             );
           }
 
-          final background = Positioned.fill(
-            child: const BackgroundWidget(),
-          );
+          return ListenableBuilder(
+            listenable: _controller,
+            builder: (context, child) {
+              final background = Positioned.fill(
+                child: const BackgroundWidget(),
+              );
 
-          final groundPositioned = Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: const GroundWidget(),
-          );
+              final groundPositioned = Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: const GroundWidget(),
+              );
 
-          final birdWidget = BirdWidget(
-            rotation: _controller.birdRotation,
-            wing: _controller.bird.currentWing,
-          );
+              final birdWidget = BirdWidget(
+                rotation: _controller.birdRotation,
+                wing: _controller.bird.currentWing,
+              );
 
-          final alignedY = _controller.bird.posY / screenHeight * 2 - 1;
+              final alignedY =
+                  _controller.bird.posY / screenHeight * 2 - 1;
 
-          final bird = Align(
-            key: const ValueKey('bird'),
-            alignment: Alignment(0, alignedY),
-            child: birdWidget,
-          );
+              final bird = Align(
+                key: const ValueKey('bird'),
+                alignment: Alignment(0, alignedY),
+                child: birdWidget,
+              );
 
-          final children = <Widget>[background, groundPositioned, bird];
+              final children = <Widget>[
+                background,
+                groundPositioned,
+                bird,
+              ];
 
-          if (_controller.gamePhase == GamePhase.idle) {
-            final tapText = const Text(
-              'Tap to start',
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                shadows: [Shadow(blurRadius: 4, color: Colors.black54)],
-              ),
-            );
+              if (_controller.gamePhase == GamePhase.idle) {
+                final tapText = const Text(
+                  'Tap to start',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(blurRadius: 4, color: Colors.black54),
+                    ],
+                  ),
+                );
 
-            final tapTextCentered = Align(
-              alignment: Alignment(0, -0.5),
-              child: tapText,
-            );
+                final tapTextCentered = Align(
+                  alignment: Alignment(0, -0.5),
+                  child: tapText,
+                );
 
-            children.add(tapTextCentered);
-          }
+                children.add(tapTextCentered);
+              }
 
-          final stack = Stack(
-            fit: StackFit.expand,
-            children: children,
-          );
+              final stack = Stack(
+                fit: StackFit.expand,
+                children: children,
+              );
 
-          return GestureDetector(
-            onTap: _onTap,
-            behavior: HitTestBehavior.opaque,
-            child: stack,
+              return GestureDetector(
+                onTap: _onTap,
+                behavior: HitTestBehavior.opaque,
+                child: stack,
+              );
+            },
           );
         },
       ),
