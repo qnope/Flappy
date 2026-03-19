@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 
 import 'background_widget.dart';
 import 'bird_widget.dart';
+import 'clouds_widget.dart';
 import 'game_constants.dart';
 import 'game_controller.dart';
 import 'game_state.dart';
@@ -70,8 +71,15 @@ class _GameScreenState extends State<GameScreen>
           return ListenableBuilder(
             listenable: _controller,
             builder: (context, child) {
+              final groundOffset = _controller.groundScrollOffset;
+              final cloudsOffset = _controller.cloudsScrollOffset;
+
               final background = Positioned.fill(
                 child: const BackgroundWidget(),
+              );
+
+              final clouds = Positioned.fill(
+                child: CloudsWidget(scrollOffset: cloudsOffset),
               );
 
               final groundPositioned = Positioned(
@@ -79,7 +87,7 @@ class _GameScreenState extends State<GameScreen>
                 left: 0,
                 right: 0,
                 child: GroundWidget(
-                  scrollOffset: _controller.groundScrollOffset,
+                  scrollOffset: groundOffset,
                 ),
               );
 
@@ -99,8 +107,9 @@ class _GameScreenState extends State<GameScreen>
 
               final children = <Widget>[
                 background,
-                groundPositioned,
+                clouds,
                 bird,
+                groundPositioned,
               ];
 
               if (_controller.gamePhase == GamePhase.idle) {
