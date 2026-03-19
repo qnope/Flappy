@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flappy/game/game_screen.dart';
 import 'package:flappy/game/bird_widget.dart';
+import 'package:flappy/game/clouds_widget.dart';
 
 Widget createTestApp() {
   return const MaterialApp(home: GameScreen());
@@ -50,6 +51,22 @@ void main() {
             bytesLoader.assetName.contains('bird_');
       });
       expect(hasBird, isTrue);
+    });
+
+    testWidgets('renders clouds', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pump();
+
+      expect(find.byType(CloudsWidget), findsOneWidget);
+
+      final svgWidgets =
+          tester.widgetList<SvgPicture>(find.byType(SvgPicture));
+      final hasClouds = svgWidgets.any((svg) {
+        final bytesLoader = svg.bytesLoader;
+        return bytesLoader is SvgAssetLoader &&
+            bytesLoader.assetName == 'assets/images/clouds.svg';
+      });
+      expect(hasClouds, isTrue);
     });
 
     testWidgets('shows tap to start text initially', (tester) async {

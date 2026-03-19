@@ -8,6 +8,7 @@ void main() {
   const allSvgAssets = [
     '$assetDir/background.svg',
     '$assetDir/ground.svg',
+    '$assetDir/clouds.svg',
     '$assetDir/bird_up.svg',
     '$assetDir/bird_mid.svg',
     '$assetDir/bird_down.svg',
