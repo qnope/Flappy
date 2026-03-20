@@ -3,15 +3,18 @@ import 'dart:math';
 import 'bird.dart';
 import 'game_constants.dart';
 import 'game_state.dart';
+import 'pipe_pool.dart';
 import 'wing.dart';
 
 class GameController {
   GamePhase gamePhase = GamePhase.idle;
   late Bird bird;
+  late PipePool pipePool;
   double groundTopY = 0;
   double groundScrollOffset = 0.0;
   double cloudsScrollOffset = 0.0;
   double _birdStartY = 0;
+  double _screenWidth = 0;
   double _idleTime = 0.0;
   int _wingSequenceIndex = 0;
   Duration _wingFrameTimer = Duration.zero;
@@ -22,10 +25,18 @@ class GameController {
   void initialize({
     required double birdStartY,
     required double groundTopY,
+    required double screenWidth,
+    Random? random,
   }) {
     bird = Bird(posY: birdStartY);
     _birdStartY = birdStartY;
     this.groundTopY = groundTopY;
+    _screenWidth = screenWidth;
+    pipePool = PipePool(
+      groundTopY: groundTopY,
+      screenWidth: screenWidth,
+      random: random,
+    );
     _initialized = true;
   }
 
@@ -34,6 +45,7 @@ class GameController {
       gamePhase = GamePhase.playing;
       bird.posY = _birdStartY;
       bird.jump(GameConstants.jumpVelocity);
+      pipePool.reset();
     } else if (gamePhase == GamePhase.playing) {
       bird.jump(GameConstants.jumpVelocity);
     }
@@ -43,8 +55,10 @@ class GameController {
     if (!_initialized) return;
     if (dt > 0.1) return;
 
-    groundScrollOffset += GameConstants.groundScrollSpeed * dt;
+    final groundDistance = GameConstants.groundScrollSpeed * dt;
+    groundScrollOffset += groundDistance;
     cloudsScrollOffset += GameConstants.cloudsScrollSpeed * dt;
+    pipePool.update(groundDistance);
 
     if (gamePhase == GamePhase.idle) {
       _idleTime += dt;

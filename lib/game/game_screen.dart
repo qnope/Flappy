@@ -66,6 +66,7 @@ class _GameScreenState extends State<GameScreen>
             _controller.initialize(
               birdStartY: birdStartY,
               groundTopY: groundTopY,
+              screenWidth: screenWidth,
             );
           }
 
