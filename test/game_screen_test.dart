@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flappy/game/game_screen.dart';
 import 'package:flappy/game/bird_widget.dart';
 import 'package:flappy/game/clouds_widget.dart';
+import 'package:flappy/game/pipe_widget.dart';
+import 'package:flappy/game/game_constants.dart';
 
 Widget createTestApp() {
   return const MaterialApp(home: GameScreen());
@@ -201,6 +203,32 @@ void main() {
         ),
       );
       expect(bird.rotation, lessThan(0));
+    });
+  });
+
+  group('GameScreen pipes', () {
+    testWidgets('pipe widgets present during idle', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pump();
+
+      expect(find.byType(PipeWidget), findsWidgets);
+    });
+
+    testWidgets('pipe widgets present during playing', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pump();
+
+      await tester.tap(find.byType(GestureDetector));
+      await tester.pump();
+
+      expect(find.byType(PipeWidget), findsWidgets);
+    });
+
+    testWidgets('correct number of pipe widgets', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pump();
+
+      expect(find.byType(PipeWidget), findsNWidgets(GameConstants.pipePoolSize));
     });
   });
 }
