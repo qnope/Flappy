@@ -12,6 +12,7 @@ void main() {
     controller.initialize(
       birdStartY: 200,
       groundTopY: 400,
+      screenWidth: 360,
     );
   });
 
@@ -178,6 +179,40 @@ void main() {
       controller.onTap();
       controller.update(0.2); // should be skipped
       expect(controller.bird.posY, equals(initialY));
+    });
+  });
+
+  group('Pipe integration', () {
+    test('pipe pool is created on initialize', () {
+      expect(controller.pipePool.pipes.length, equals(GameConstants.pipePoolSize));
+    });
+
+    test('pipes move at ground scroll speed', () {
+      final initialPosX = controller.pipePool.pipes[0].posX;
+      controller.update(0.05);
+      final expectedDistance = GameConstants.groundScrollSpeed * 0.05;
+      expect(controller.pipePool.pipes[0].posX, closeTo(initialPosX - expectedDistance, 0.001));
+    });
+
+    test('pipes reset when transitioning from idle to playing', () {
+      for (int i = 0; i < 50; i++) {
+        controller.update(0.016);
+      }
+      final posXBeforeReset = controller.pipePool.pipes[0].posX;
+
+      controller.onTap(); // idle -> playing, triggers reset
+      final posXAfterReset = controller.pipePool.pipes[0].posX;
+
+      expect(posXAfterReset, greaterThan(posXBeforeReset));
+    });
+
+    test('pipes do not reset on subsequent taps (jumps)', () {
+      controller.onTap(); // idle -> playing
+      controller.update(0.016);
+      final posXBefore = controller.pipePool.pipes[0].posX;
+      controller.onTap(); // jump
+      final posXAfter = controller.pipePool.pipes[0].posX;
+      expect(posXAfter, equals(posXBefore));
     });
   });
 }
