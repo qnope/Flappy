@@ -37,7 +37,7 @@ class GameConstants {
   static const double gapMinCenterMargin = 60.0;
 
   // Pipe pool and spacing
-  static const int pipePoolSize = 4;
+  static const int pipePoolSize = 6;
   static const double pipeSpacing = 200.0;
   static const double firstPipeOffset = 350.0;
 }

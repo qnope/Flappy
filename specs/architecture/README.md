@@ -23,6 +23,9 @@ incrementally, feature by feature.
 │  game_controller.dart  (game logic)     │
 │  bird.dart             (entity model)   │
 │  bird_widget.dart      (SVG renderer)   │
+│  pipe.dart             (pipe model)     │
+│  pipe_pool.dart        (pipe recycling) │
+│  pipe_widget.dart      (pipe renderer)  │
 │  background_widget.dart (BG renderer)   │
 │  ground_widget.dart    (ground render)  │
 │  clouds_widget.dart    (clouds render)  │
@@ -47,7 +50,10 @@ incrementally, feature by feature.
 │                                         │
 │  wing_test.dart           (unit tests)  │
 │  bird_test.dart           (unit tests)  │
+│  pipe_test.dart           (unit tests)  │
+│  pipe_pool_test.dart      (unit tests)  │
 │  game_controller_test.dart(unit tests)  │
+│  pipe_widget_test.dart    (widget)      │
 │  background_widget_test.dart (widget)   │
 │  ground_widget_test.dart  (widget)      │
 │  clouds_widget_test.dart  (widget)      │
@@ -69,6 +75,9 @@ incrementally, feature by feature.
 | Game | `lib/game/game_controller.dart` | Plain Dart class owning all game logic and state. |
 | Game | `lib/game/bird.dart` | Bird entity: vertical position, physics, wing state, rotation. |
 | Game | `lib/game/bird_widget.dart` | Stateless SVG bird renderer with rotation. |
+| Game | `lib/game/pipe.dart` | Pipe data model: position, gap center, gap size, computed edges. |
+| Game | `lib/game/pipe_pool.dart` | Fixed-size pool of pipes with recycling and random gap generation. |
+| Game | `lib/game/pipe_widget.dart` | Stateless SVG pipe pair renderer (top pipe + bottom pipe). |
 | Game | `lib/game/background_widget.dart` | Stateless background SVG renderer. |
 | Game | `lib/game/ground_widget.dart` | Scrolling ground layer using ScrollingLayerWidget. |
 | Game | `lib/game/clouds_widget.dart` | Scrolling clouds layer using ScrollingLayerWidget. |
@@ -80,7 +89,10 @@ incrementally, feature by feature.
 | Assets | `assets/images/` | 8 SVG game sprites registered in `pubspec.yaml`. |
 | Tests | `test/wing_test.dart` | Unit tests for Wing enum and animation sequence. |
 | Tests | `test/bird_test.dart` | Unit tests for Bird entity (physics, rotation, wing). |
-| Tests | `test/game_controller_test.dart` | Unit tests for GameController logic. |
+| Tests | `test/pipe_test.dart` | Unit tests for Pipe model gap computations. |
+| Tests | `test/pipe_pool_test.dart` | Unit tests for PipePool recycling, spacing, and reset. |
+| Tests | `test/game_controller_test.dart` | Unit tests for GameController logic incl. pipe integration. |
+| Tests | `test/pipe_widget_test.dart` | Widget tests for PipeWidget rendering and positioning. |
 | Tests | `test/background_widget_test.dart` | Widget tests for BackgroundWidget. |
 | Tests | `test/ground_widget_test.dart` | Widget tests for GroundWidget. |
 | Tests | `test/clouds_widget_test.dart` | Widget tests for CloudsWidget. |
