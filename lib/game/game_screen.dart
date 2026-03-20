@@ -8,6 +8,7 @@ import 'game_constants.dart';
 import 'game_controller.dart';
 import 'game_state.dart';
 import 'ground_widget.dart';
+import 'pipe_widget.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -90,6 +91,26 @@ class _GameScreenState extends State<GameScreen>
             ),
           );
 
+          final pipeWidgets = <Widget>[];
+          for (final pipe in _controller.pipePool.pipes) {
+            final pipeWidget = PipeWidget(
+              gapCenterY: pipe.gapCenterY,
+              gapSize: pipe.gapSize,
+              screenHeight: screenHeight,
+              groundTopY: groundTopY,
+            );
+
+            final positionedPipe = Positioned(
+              left: pipe.posX - GameConstants.pipeCapWidth / 2,
+              top: 0,
+              bottom: 0,
+              width: GameConstants.pipeCapWidth,
+              child: pipeWidget,
+            );
+
+            pipeWidgets.add(positionedPipe);
+          }
+
           final birdWidget = BirdWidget(
             rotation: _controller.birdRotation,
             wing: _controller.bird.currentWing,
@@ -107,6 +128,7 @@ class _GameScreenState extends State<GameScreen>
           final children = <Widget>[
             background,
             clouds,
+            ...pipeWidgets,
             bird,
             groundPositioned,
           ];
