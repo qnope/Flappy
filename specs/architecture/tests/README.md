@@ -41,6 +41,38 @@ Tests `GameController` logic without Flutter widgets.
 | **Playing physics** | Gravity applied, jump on tap |
 | **Scroll offsets** | Start at zero, update each frame, skip large dt, ground faster than clouds |
 | **Wing animation** | Sprite cycles during idle and rising |
+| **Pipe integration** | Pool created on init, pipes move at ground speed, reset on idle->playing, no reset on jump |
+
+### `test/pipe_test.dart` (Unit)
+
+Tests the `Pipe` data model.
+
+| Group | What is verified |
+|---|---|
+| **Gap computations** | `gapTop` and `gapBottom` derived correctly from center and size |
+| **Field storage** | Constructor stores posX, gapCenterY, gapSize |
+
+### `test/pipe_pool_test.dart` (Unit)
+
+Tests `PipePool` with a seeded `Random(42)` for determinism.
+
+| Group | What is verified |
+|---|---|
+| **Initialization** | Correct pipe count, spacing, and starting position |
+| **Gap bounds** | Gap size within min/max, center within safe margins |
+| **Update** | Pipes move left by given distance |
+| **Recycling** | Off-screen pipes repositioned to right with new gaps and correct spacing |
+| **Reset** | All pipes regenerated at initial layout positions |
+
+### `test/pipe_widget_test.dart` (Widget)
+
+| Group | What is verified |
+|---|---|
+| **Rendering** | PipeWidget renders without error |
+| **SVG assets** | Contains 4 SvgPicture widgets (top body, top cap, bottom cap, bottom body) |
+| **Top pipe** | Positioned from Y=0 with correct height |
+| **Bottom pipe** | Positioned at gapBottom extending to bottom |
+| **Width** | Overall width equals pipeCapWidth (60px) |
 
 ### `test/background_widget_test.dart` (Widget)
 
@@ -82,6 +114,7 @@ Tests `GameScreen` via `tester.pumpWidget()` with real SVG rendering.
 | **Tap interaction** | First tap starts game (removes idle text) |
 | **Wing animation** | Sprite changes over time when idle |
 | **Bird rotation** | Rotation applied after tap and gravity |
+| **Pipes** | Pipe widgets present during idle and playing, correct count matches pool size |
 
 ### `test/game_flow_integration_test.dart` (Integration)
 

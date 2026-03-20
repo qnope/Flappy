@@ -14,7 +14,6 @@ Widget createTestWidget() {
             gapCenterY: 250,
             gapSize: 140,
             screenHeight: 600,
-            groundTopY: 500,
           ),
         ],
       ),
@@ -74,18 +73,17 @@ void main() {
       await tester.pump();
 
       const gapBottom = 250.0 + 140.0 / 2; // 320.0
-      const expectedHeight = 500.0 - gapBottom; // 180.0
 
       final positionedFinder = find.byType(Positioned);
       final positionedWidgets =
           tester.widgetList<Positioned>(positionedFinder).toList();
 
       final bottomPositioned = positionedWidgets.firstWhere(
-        (p) => p.top == gapBottom && p.height == expectedHeight,
+        (p) => p.top == gapBottom && p.bottom == 0,
       );
 
       expect(bottomPositioned.top, equals(gapBottom));
-      expect(bottomPositioned.height, equals(expectedHeight));
+      expect(bottomPositioned.bottom, equals(0));
     });
 
     testWidgets('widget has correct overall width', (tester) async {

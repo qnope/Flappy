@@ -7,14 +7,12 @@ class PipeWidget extends StatelessWidget {
   final double gapCenterY;
   final double gapSize;
   final double screenHeight;
-  final double groundTopY;
 
   const PipeWidget({
     super.key,
     required this.gapCenterY,
     required this.gapSize,
     required this.screenHeight,
-    required this.groundTopY,
   });
 
   @override
@@ -37,7 +35,7 @@ class PipeWidget extends StatelessWidget {
       top: gapBottom,
       left: 0,
       right: 0,
-      height: groundTopY - gapBottom,
+      bottom: 0,
       child: bottomPipe,
     );
 
@@ -51,12 +49,9 @@ class PipeWidget extends StatelessWidget {
   }
 
   Widget _buildTopPipe(double height) {
-    final bodyHeight = height - GameConstants.pipeCapHeight;
-
     final body = SvgPicture.asset(
       GameAssets.pipe,
       width: GameConstants.pipeWidth,
-      height: bodyHeight > 0 ? bodyHeight : 0,
       fit: BoxFit.fill,
     );
 
@@ -70,20 +65,16 @@ class PipeWidget extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Expanded(child: Center(child: body)),
+        Expanded(child: body),
         cap,
       ],
     );
   }
 
   Widget _buildBottomPipe(double gapBottom) {
-    final segmentHeight = groundTopY - gapBottom;
-    final bodyHeight = segmentHeight - GameConstants.pipeCapHeight;
-
     final body = SvgPicture.asset(
       GameAssets.pipe,
       width: GameConstants.pipeWidth,
-      height: bodyHeight > 0 ? bodyHeight : 0,
       fit: BoxFit.fill,
     );
 
@@ -101,7 +92,7 @@ class PipeWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         flippedCap,
-        Expanded(child: Center(child: body)),
+        Expanded(child: body),
       ],
     );
   }

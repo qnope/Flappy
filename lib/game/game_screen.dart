@@ -97,7 +97,6 @@ class _GameScreenState extends State<GameScreen>
               gapCenterY: pipe.gapCenterY,
               gapSize: pipe.gapSize,
               screenHeight: screenHeight,
-              groundTopY: groundTopY,
             );
 
             final positionedPipe = Positioned(
