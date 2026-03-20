@@ -25,4 +25,19 @@ class GameConstants {
   // Parallax scroll speeds (pixels per second)
   static const double groundScrollSpeed = 120.0;
   static const double cloudsScrollSpeed = 30.0;
+
+  // Pipe dimensions (based on SVG viewBox: pipe 52x320, pipe_top 60x26)
+  static const double pipeWidth = 52.0;
+  static const double pipeCapWidth = 60.0;
+  static const double pipeCapHeight = 26.0;
+
+  // Pipe gap
+  static const double gapMinSize = 120.0;
+  static const double gapMaxSize = 180.0;
+  static const double gapMinCenterMargin = 60.0;
+
+  // Pipe pool and spacing
+  static const int pipePoolSize = 4;
+  static const double pipeSpacing = 200.0;
+  static const double firstPipeOffset = 350.0;
 }
