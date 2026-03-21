@@ -179,6 +179,67 @@ class _GameScreenState extends State<GameScreen>
             children.add(scorePositioned);
           }
 
+          final isGameOver = _controller.gamePhase == GamePhase.gameOver;
+
+          final gameOverText = Text(
+            'Game Over',
+            style: const TextStyle(
+              fontSize: 48,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(blurRadius: 6, color: Colors.black87),
+              ],
+            ),
+          );
+
+          final finalScoreText = Text(
+            'Score: ${_controller.score}',
+            style: const TextStyle(
+              fontSize: 32,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              shadows: [
+                Shadow(blurRadius: 4, color: Colors.black54),
+              ],
+            ),
+          );
+
+          final restartText = Text(
+            'Tap to restart',
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.white70,
+            ),
+          );
+
+          final spacer = const SizedBox(height: 16);
+
+          final overlayColumn = Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [gameOverText, spacer, finalScoreText, spacer, restartText],
+          );
+
+          final overlayCenter = Center(child: overlayColumn);
+
+          final overlayBackground = Container(
+            color: Colors.black54,
+            child: overlayCenter,
+          );
+
+          final gameOverOverlay = Positioned.fill(
+            child: AnimatedOpacity(
+              opacity: isGameOver ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 500),
+              child: IgnorePointer(
+                ignoring: !isGameOver,
+                child: overlayBackground,
+              ),
+            ),
+          );
+
+          children.add(gameOverOverlay);
+
           final stack = Stack(
             fit: StackFit.expand,
             children: children,

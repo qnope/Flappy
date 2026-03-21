@@ -232,6 +232,76 @@ void main() {
     });
   });
 
+  group('GameScreen game over overlay', () {
+    testWidgets('game over overlay not visible in idle', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pump();
+
+      final animatedOpacity = tester.widget<AnimatedOpacity>(
+        find.byType(AnimatedOpacity),
+      );
+      expect(animatedOpacity.opacity, equals(0.0));
+    });
+
+    testWidgets('game over overlay visible in gameOver', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pump();
+
+      // Tap to start playing
+      await tester.tap(find.byType(GestureDetector));
+      await tester.pump();
+
+      // Pump many frames so bird falls to ground and triggers gameOver
+      for (int i = 0; i < 300; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+
+      final animatedOpacity = tester.widget<AnimatedOpacity>(
+        find.byType(AnimatedOpacity),
+      );
+      expect(animatedOpacity.opacity, equals(1.0));
+      expect(find.text('Game Over'), findsOneWidget);
+    });
+
+    testWidgets('game over shows final score', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pump();
+
+      // Tap to start playing
+      await tester.tap(find.byType(GestureDetector));
+      await tester.pump();
+
+      // Pump many frames so bird falls to ground and triggers gameOver
+      for (int i = 0; i < 300; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+
+      expect(find.text('Score: 0'), findsOneWidget);
+    });
+
+    testWidgets('tap during gameOver restarts game', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pump();
+
+      // Tap to start playing
+      await tester.tap(find.byType(GestureDetector));
+      await tester.pump();
+
+      // Pump many frames so bird falls to ground and triggers gameOver
+      for (int i = 0; i < 300; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+
+      expect(find.text('Game Over'), findsOneWidget);
+
+      // Tap to restart
+      await tester.tap(find.byType(GestureDetector));
+      await tester.pump();
+
+      expect(find.text('Tap to start'), findsOneWidget);
+    });
+  });
+
   group('GameScreen score display', () {
     testWidgets('score not visible in idle', (tester) async {
       await tester.pumpWidget(createTestApp());
