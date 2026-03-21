@@ -57,6 +57,7 @@ class PipePool {
         pipe.posX = maxX + GameConstants.pipeSpacing;
         pipe.gapCenterY = _randomGapCenter();
         pipe.gapSize = _randomGapSize();
+        pipe.scored = false;
         maxX = pipe.posX;
       }
     }

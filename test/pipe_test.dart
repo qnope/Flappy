@@ -19,5 +19,16 @@ void main() {
       expect(pipe.gapCenterY, equals(300));
       expect(pipe.gapSize, equals(140));
     });
+
+    test('scored defaults to false', () {
+      final pipe = Pipe(posX: 100, gapCenterY: 300, gapSize: 140);
+      expect(pipe.scored, isFalse);
+    });
+
+    test('scored can be set', () {
+      final pipe = Pipe(posX: 100, gapCenterY: 300, gapSize: 140);
+      pipe.scored = true;
+      expect(pipe.scored, isTrue);
+    });
   });
 }

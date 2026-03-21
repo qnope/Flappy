@@ -94,6 +94,27 @@ void main() {
       expect(firstPipe.posX, closeTo(expectedX, 0.001));
     });
 
+    test('scored resets on pool reset', () {
+      for (final pipe in pool.pipes) {
+        pipe.scored = true;
+      }
+      pool.reset();
+      for (final pipe in pool.pipes) {
+        expect(pipe.scored, isFalse);
+      }
+    });
+
+    test('scored resets on recycle', () {
+      final firstPipe = pool.pipes[0];
+      firstPipe.scored = true;
+
+      // Move far enough so the first pipe exits the left edge
+      final moveDistance = firstPipe.posX + GameConstants.pipeCapWidth / 2 + 1;
+      pool.update(moveDistance);
+
+      expect(firstPipe.scored, isFalse);
+    });
+
     test('reset regenerates all pipes', () {
       pool.update(100);
       final positionsAfterUpdate = pool.pipes.map((p) => p.posX).toList();
