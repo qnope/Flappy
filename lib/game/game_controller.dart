@@ -14,7 +14,6 @@ class GameController {
   double groundScrollOffset = 0.0;
   double cloudsScrollOffset = 0.0;
   double _birdStartY = 0;
-  double _screenWidth = 0;
   double _idleTime = 0.0;
   int _wingSequenceIndex = 0;
   Duration _wingFrameTimer = Duration.zero;
@@ -31,7 +30,6 @@ class GameController {
     bird = Bird(posY: birdStartY);
     _birdStartY = birdStartY;
     this.groundTopY = groundTopY;
-    _screenWidth = screenWidth;
     pipePool = PipePool(
       groundTopY: groundTopY,
       screenWidth: screenWidth,
