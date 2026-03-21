@@ -297,4 +297,58 @@ void main() {
       expect(controller.gamePhase, equals(GamePhase.dying));
     });
   });
+
+  group('Score tracking', () {
+    test('score starts at 0', () {
+      expect(controller.score, equals(0));
+    });
+
+    test('score increments when bird passes pipe', () {
+      controller.onTap(); // idle -> playing
+      // Move all pipes far away so no collision interferes.
+      for (final pipe in controller.pipePool.pipes) {
+        pipe.posX = 9999;
+        pipe.gapCenterY = 218;
+        pipe.gapSize = 180;
+      }
+      // Place first pipe so its right edge is left of bird center (180).
+      // posX=100 -> right edge = 100 + 30 = 130 < 180
+      final pipe = controller.pipePool.pipes[0];
+      pipe.posX = 100;
+
+      controller.update(0.016);
+      expect(controller.score, equals(1));
+    });
+
+    test('pipe scored only once', () {
+      controller.onTap(); // idle -> playing
+      // Move all pipes far away so no collision interferes.
+      for (final pipe in controller.pipePool.pipes) {
+        pipe.posX = 9999;
+        pipe.gapCenterY = 218;
+        pipe.gapSize = 180;
+      }
+      // Place first pipe so its right edge is left of bird center.
+      final pipe = controller.pipePool.pipes[0];
+      pipe.posX = 100;
+
+      controller.update(0.016);
+      expect(controller.score, equals(1));
+
+      // Multiple updates should not increment score again.
+      controller.update(0.016);
+      controller.update(0.016);
+      controller.update(0.016);
+      expect(controller.score, equals(1));
+    });
+
+    test('score resets on new game', () {
+      controller.onTap(); // idle -> playing
+      controller.gamePhase = GamePhase.idle;
+      controller.score = 5;
+
+      controller.onTap(); // idle -> playing again
+      expect(controller.score, equals(0));
+    });
+  });
 }

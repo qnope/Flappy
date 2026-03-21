@@ -8,6 +8,7 @@ import 'wing.dart';
 
 class GameController {
   GamePhase gamePhase = GamePhase.idle;
+  int score = 0;
   late Bird bird;
   late PipePool pipePool;
   double groundTopY = 0;
@@ -43,6 +44,7 @@ class GameController {
   void onTap() {
     if (gamePhase == GamePhase.idle) {
       gamePhase = GamePhase.playing;
+      score = 0;
       bird.posY = _birdStartY;
       bird.jump(GameConstants.jumpVelocity);
       pipePool.reset();
@@ -83,6 +85,7 @@ class GameController {
         gamePhase = GamePhase.gameOver;
         return;
       }
+      _updateScore();
     } else if (gamePhase == GamePhase.dying) {
       bird.update(dt, GameConstants.gravity);
       final hitGround = bird.clampToGround(groundTopY, GameConstants.birdHeight);
@@ -124,6 +127,18 @@ class GameController {
       if (!inGap) return true;
     }
     return false;
+  }
+
+  void _updateScore() {
+    final birdCenterX = _screenWidth / 2;
+    for (final pipe in pipePool.pipes) {
+      if (pipe.scored) continue;
+      final pipeRightEdge = pipe.posX + GameConstants.pipeCapWidth / 2;
+      if (birdCenterX > pipeRightEdge) {
+        pipe.scored = true;
+        score++;
+      }
+    }
   }
 
   void _updateWingAnimation(double dt) {
