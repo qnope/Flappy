@@ -153,6 +153,32 @@ class _GameScreenState extends State<GameScreen>
             children.add(tapTextCentered);
           }
 
+          final isScoreVisible =
+              _controller.gamePhase == GamePhase.playing ||
+              _controller.gamePhase == GamePhase.dying;
+
+          if (isScoreVisible) {
+            final scoreText = Text(
+              '${_controller.score}',
+              style: const TextStyle(
+                fontSize: 48,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(blurRadius: 4, color: Colors.black54),
+                  Shadow(blurRadius: 8, color: Colors.black26),
+                ],
+              ),
+            );
+
+            final scorePositioned = Align(
+              alignment: const Alignment(0, -0.75),
+              child: scoreText,
+            );
+
+            children.add(scorePositioned);
+          }
+
           final stack = Stack(
             fit: StackFit.expand,
             children: children,
