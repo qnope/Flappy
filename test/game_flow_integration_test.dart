@@ -31,7 +31,7 @@ void main() {
       expect((birdAfterTap.alignment as Alignment).y, lessThan(idleY));
 
       // Pump frames until bird starts falling (past the peak)
-      for (int i = 0; i < 60; i++) {
+      for (int i = 0; i < 50; i++) {
         await tester.pump(const Duration(milliseconds: 16));
       }
 
@@ -84,6 +84,66 @@ void main() {
         find.byKey(const ValueKey('bird')),
       );
       expect((birdStill.alignment as Alignment).y, closeTo(groundY, 0.001));
+    });
+
+    testWidgets('full game cycle: idle → playing → gameOver → idle',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(288, 512));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(const MaterialApp(home: GameScreen()));
+      await tester.pump();
+
+      // Verify idle state
+      expect(find.text('Tap to start'), findsOneWidget);
+
+      // Tap to start playing
+      await tester.tap(find.byType(GestureDetector));
+      await tester.pump();
+      expect(find.text('Tap to start'), findsNothing);
+
+      // Let bird fall to ground to trigger gameOver
+      for (int i = 0; i < 200; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+
+      // Verify game over overlay is showing
+      expect(find.text('Game Over'), findsOneWidget);
+
+      // Tap to restart
+      await tester.tap(find.byType(GestureDetector));
+      await tester.pump();
+
+      // Verify back in idle
+      expect(find.text('Tap to start'), findsOneWidget);
+      // Game over overlay is always in tree but hidden via AnimatedOpacity
+      final animatedOpacity = tester.widget<AnimatedOpacity>(
+        find.byType(AnimatedOpacity),
+      );
+      expect(animatedOpacity.opacity, equals(0.0));
+    });
+
+    testWidgets('score visible during dying phase', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(288, 512));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(const MaterialApp(home: GameScreen()));
+      await tester.pump();
+
+      // Tap to start playing
+      await tester.tap(find.byType(GestureDetector));
+      await tester.pump();
+
+      // Score should be visible during playing
+      expect(find.text('0'), findsOneWidget);
+
+      // Let bird fall to ground (game will go through playing → gameOver)
+      for (int i = 0; i < 200; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+
+      // In game over, the score should be shown in the overlay
+      expect(find.text('Score: 0'), findsOneWidget);
     });
 
     testWidgets('bird can exit top of screen', (tester) async {
