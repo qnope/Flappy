@@ -33,7 +33,7 @@ incrementally, feature by feature.
 │  wing.dart             (wing enum)      │
 │  game_assets.dart      (asset paths)    │
 │  game_constants.dart   (tuning values)  │
-│  game_state.dart       (idle / playing) │
+│  game_state.dart       (game phases)    │
 └──────────────────┬──────────────────────┘
                    │ loads via flutter_svg
 ┌──────────────────▼──────────────────────┐
@@ -85,7 +85,7 @@ incrementally, feature by feature.
 | Game | `lib/game/wing.dart` | `Wing` enum with asset paths and animation sequence. |
 | Game | `lib/game/game_assets.dart` | Centralized SVG asset path constants. |
 | Game | `lib/game/game_constants.dart` | Physics, dimensions, and animation tuning values. |
-| Game | `lib/game/game_state.dart` | `GamePhase` enum: `idle` and `playing`. |
+| Game | `lib/game/game_state.dart` | `GamePhase` enum: `idle`, `playing`, `dying`, `gameOver`. |
 | Assets | `assets/images/` | 8 SVG game sprites registered in `pubspec.yaml`. |
 | Tests | `test/wing_test.dart` | Unit tests for Wing enum and animation sequence. |
 | Tests | `test/bird_test.dart` | Unit tests for Bird entity (physics, rotation, wing). |

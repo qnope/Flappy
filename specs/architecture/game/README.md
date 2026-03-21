@@ -33,26 +33,35 @@ Ticker (every frame)
 
 ## Game Phases
 
-The `GamePhase` enum drives two distinct states:
+The `GamePhase` enum drives four distinct states forming a cycle:
 
-| Phase | Gravity | Input | Bird Behavior |
-|-------|---------|-------|---------------|
-| `idle` | Off | First tap starts game | Bobs up/down at center, wings animate |
-| `playing` | On | Each tap triggers jump | Falls with gravity, taps give upward impulse |
+```
+idle ──tap──▶ playing ──collision──▶ dying ──ground hit──▶ gameOver ──tap──▶ idle
+```
+
+| Phase | Gravity | Scrolling | Input | Bird Behavior |
+|-------|---------|-----------|-------|---------------|
+| `idle` | Off | Yes | First tap starts game | Bobs up/down at center, wings animate |
+| `playing` | On | Yes | Each tap triggers jump | Falls with gravity, collision checks active |
+| `dying` | On | No | Ignored | Bird falls to ground after pipe collision |
+| `gameOver` | Off | No | Tap restarts to idle | Frozen, game over overlay shown |
 
 ## GameController (`game_controller.dart`)
 
 A plain Dart class that owns all game logic:
-- Game phase transitions (idle -> playing)
+- Game phase transitions (`idle` → `playing` → `dying` → `gameOver` → `idle`)
 - Bird instance and physics updates
 - Idle bobbing animation
 - Wing animation timing
 - Bird rotation computation
 - Scroll offsets (`groundScrollOffset`, `cloudsScrollOffset`) updated every frame
 - `PipePool` instance: pipes advance by the same distance as ground each frame
+- **Collision detection**: AABB check of bird rect against all pipe solid areas
+- **Score tracking**: increments when bird center passes a pipe's right edge
+- **Game over reset**: restores all state (bird, score, pipes, phase) to initial
 
-On tap (idle -> playing), the pipe pool is reset to starting positions. Scroll
-offsets advance continuously in both idle and playing phases. Large `dt` values
+On tap (idle → playing), the pipe pool is reset to starting positions. Scroll
+offsets advance continuously in idle and playing phases. Large `dt` values
 (> 0.1s) are skipped to avoid visual jumps.
 
 Fully unit-testable without Flutter widgets.
@@ -81,8 +90,9 @@ pipe, pipeTop, clouds).
 
 ### Pipe Model (`pipe.dart`)
 
-A plain Dart class with `posX`, `gapCenterY`, and `gapSize` fields. Computed
-getters `gapTop` and `gapBottom` derive the gap edges from center and size.
+A plain Dart class with `posX`, `gapCenterY`, `gapSize`, and `scored` fields.
+Computed getters `gapTop` and `gapBottom` derive the gap edges from center and
+size. The `scored` flag prevents double-counting when the bird passes a pipe.
 
 ### PipePool (`pipe_pool.dart`)
 
@@ -102,8 +112,11 @@ with a stretchable body and a fixed cap. The bottom cap is flipped vertically.
 
 ### Rendering Order
 
-Pipes are rendered between clouds and the bird in `GameScreen`'s Stack:
-`background -> clouds -> pipes -> bird -> ground`
+Layers are rendered in `GameScreen`'s Stack from back to front:
+`background → clouds → pipes → bird → ground → score → game over overlay`
+
+The score display is visible during `playing` and `dying` phases. The game over
+overlay fades in with a 500ms animation when phase reaches `gameOver`.
 
 ## Widget Components
 
