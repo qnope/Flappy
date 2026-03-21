@@ -1,7 +1,7 @@
 class GameConstants {
   // Bird physics
-  static const double gravity = 1200.0; // pixels/sec² downward
-  static const double jumpVelocity = -400.0; // pixels/sec upward (negative = up)
+  static const double gravity = 800.0; // pixels/sec² downward
+  static const double jumpVelocity = -200.0; // pixels/sec upward (negative = up)
   static const double maxFallVelocity = 600.0; // terminal velocity
 
   // Bird dimensions (based on SVG viewBox 34x24, scaled up)
