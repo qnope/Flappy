@@ -3,6 +3,7 @@ import 'package:flappy/game/game_controller.dart';
 import 'package:flappy/game/game_constants.dart';
 import 'package:flappy/game/game_state.dart';
 import 'package:flappy/game/wing.dart';
+import 'package:flappy/game/pipe.dart';
 
 void main() {
   late GameController controller;
@@ -213,6 +214,87 @@ void main() {
       controller.onTap(); // jump
       final posXAfter = controller.pipePool.pipes[0].posX;
       expect(posXAfter, equals(posXBefore));
+    });
+  });
+
+  group('Collision detection', () {
+    test('pipe collision triggers dying', () {
+      controller.onTap(); // idle -> playing
+      // Position bird above the gap so it collides with the top pipe.
+      // Bird is centered at x=180 (screenWidth/2).
+      // Place pipe at x=180 so horizontal overlap occurs.
+      // Set gap well below the bird so the bird is above gapTop.
+      final pipe = controller.pipePool.pipes[0];
+      pipe.posX = 180;
+      pipe.gapCenterY = 350;
+      pipe.gapSize = 60;
+      // bird.posY = 200, birdBottom = 236, gapTop = 320 -> bird is above gap
+
+      controller.update(0.016);
+      expect(controller.gamePhase, equals(GamePhase.dying));
+    });
+
+    test('no collision when bird is in gap', () {
+      controller.onTap(); // idle -> playing
+      // Place pipe at bird's x, with gap encompassing the bird's y range.
+      // bird.posY ~ 200 after jump+one frame, birdBottom ~ 236
+      // Set gap large enough to contain bird.
+      final pipe = controller.pipePool.pipes[0];
+      pipe.posX = 180;
+      pipe.gapCenterY = 218; // gap center near bird center
+      pipe.gapSize = 180; // gapTop = 128, gapBottom = 308 -> bird (200-236) is inside
+
+      controller.update(0.016);
+      expect(controller.gamePhase, equals(GamePhase.playing));
+    });
+
+    test('ground collision during playing triggers gameOver', () {
+      controller.onTap(); // idle -> playing
+      // Move all pipes far away so no pipe collision interferes.
+      for (final pipe in controller.pipePool.pipes) {
+        pipe.posX = 9999;
+      }
+      // Give bird a very high downward velocity to hit ground quickly.
+      controller.bird.velocityY = 10000;
+      controller.update(0.05);
+      expect(controller.gamePhase, equals(GamePhase.gameOver));
+    });
+
+    test('dying bird falls to ground then gameOver', () {
+      controller.onTap(); // idle -> playing
+      controller.gamePhase = GamePhase.dying;
+      controller.bird.velocityY = 0;
+      controller.bird.posY = 200;
+
+      // Update enough frames for bird to fall to ground (groundTopY=400)
+      for (int i = 0; i < 200; i++) {
+        controller.update(0.016);
+        if (controller.gamePhase == GamePhase.gameOver) break;
+      }
+      expect(controller.gamePhase, equals(GamePhase.gameOver));
+      expect(
+        controller.bird.posY + GameConstants.birdHeight,
+        closeTo(controller.groundTopY, 0.001),
+      );
+    });
+
+    test('dying phase stops scrolling', () {
+      controller.onTap(); // idle -> playing
+      controller.update(0.016); // one frame of playing
+      final offsetBefore = controller.groundScrollOffset;
+
+      controller.gamePhase = GamePhase.dying;
+      controller.update(0.016);
+
+      expect(controller.groundScrollOffset, equals(offsetBefore));
+    });
+
+    test('tap ignored during dying', () {
+      controller.onTap(); // idle -> playing
+      controller.gamePhase = GamePhase.dying;
+
+      controller.onTap();
+      expect(controller.gamePhase, equals(GamePhase.dying));
     });
   });
 }
