@@ -231,4 +231,36 @@ void main() {
       expect(find.byType(PipeWidget), findsNWidgets(GameConstants.pipePoolSize));
     });
   });
+
+  group('GameScreen score display', () {
+    testWidgets('score not visible in idle', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pump();
+
+      expect(find.text('0'), findsNothing);
+    });
+
+    testWidgets('score visible during playing', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pump();
+
+      await tester.tap(find.byType(GestureDetector));
+      await tester.pump();
+
+      expect(find.text('0'), findsOneWidget);
+    });
+
+    testWidgets('score text has correct style', (tester) async {
+      await tester.pumpWidget(createTestApp());
+      await tester.pump();
+
+      await tester.tap(find.byType(GestureDetector));
+      await tester.pump();
+
+      final scoreWidget = tester.widget<Text>(find.text('0'));
+      expect(scoreWidget.style!.fontSize, equals(48));
+      expect(scoreWidget.style!.color, equals(Colors.white));
+      expect(scoreWidget.style!.fontWeight, equals(FontWeight.bold));
+    });
+  });
 }
