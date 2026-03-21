@@ -3,7 +3,6 @@ import 'package:flappy/game/game_controller.dart';
 import 'package:flappy/game/game_constants.dart';
 import 'package:flappy/game/game_state.dart';
 import 'package:flappy/game/wing.dart';
-import 'package:flappy/game/pipe.dart';
 
 void main() {
   late GameController controller;
