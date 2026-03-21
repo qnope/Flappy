@@ -40,8 +40,11 @@ Tests `GameController` logic without Flutter widgets.
 | **Tap to start** | Phase transitions from idle to playing |
 | **Playing physics** | Gravity applied, jump on tap |
 | **Scroll offsets** | Start at zero, update each frame, skip large dt, ground faster than clouds |
-| **Wing animation** | Sprite cycles during idle and rising |
+| **Wing animation** | Sprite cycles during idle and rising; freezes on dying/gameOver |
 | **Pipe integration** | Pool created on init, pipes move at ground speed, reset on idle->playing, no reset on jump |
+| **Collision detection** | Pipe and ground collisions transition to dying/gameOver phases |
+| **Score tracking** | Score increments when bird passes pipe, uses scored flag to prevent duplicates |
+| **Game over reset** | Tap during gameOver resets all state (phase, bird, score, pipes) to idle |
 
 ### `test/pipe_test.dart` (Unit)
 
@@ -51,6 +54,7 @@ Tests the `Pipe` data model.
 |---|---|
 | **Gap computations** | `gapTop` and `gapBottom` derived correctly from center and size |
 | **Field storage** | Constructor stores posX, gapCenterY, gapSize |
+| **Scored flag** | Defaults to false, can be set to true |
 
 ### `test/pipe_pool_test.dart` (Unit)
 
@@ -63,6 +67,7 @@ Tests `PipePool` with a seeded `Random(42)` for determinism.
 | **Update** | Pipes move left by given distance |
 | **Recycling** | Off-screen pipes repositioned to right with new gaps and correct spacing |
 | **Reset** | All pipes regenerated at initial layout positions |
+| **Scored reset** | Scored flag cleared on pipe recycling and pool reset |
 
 ### `test/pipe_widget_test.dart` (Widget)
 
@@ -115,6 +120,8 @@ Tests `GameScreen` via `tester.pumpWidget()` with real SVG rendering.
 | **Wing animation** | Sprite changes over time when idle |
 | **Bird rotation** | Rotation applied after tap and gravity |
 | **Pipes** | Pipe widgets present during idle and playing, correct count matches pool size |
+| **Score display** | Score visible during playing/dying, hidden during idle/gameOver |
+| **Game over overlay** | Overlay with final score and restart hint shown on gameOver |
 
 ### `test/game_flow_integration_test.dart` (Integration)
 
@@ -122,8 +129,10 @@ Tests the complete gameplay sequence end-to-end.
 
 | Group | What is verified |
 |---|---|
-| **Full game flow** | Idle -> tap -> bird jumps -> gravity pulls down -> tap again |
-| **Ground collision** | Bird stops at ground level after sustained fall |
+| **Full game flow** | Idle → tap → bird jumps → gravity pulls down → tap again |
+| **Ground collision** | Ground hit during playing triggers gameOver phase |
+| **Full lifecycle** | idle → playing → dying → gameOver → idle (tap to restart) |
+| **Score persistence** | Score maintained through dying phase, cleared on restart |
 
 ### `test/asset_existence_test.dart` (Unit)
 
