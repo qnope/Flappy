@@ -158,7 +158,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 16));
 
       // Tap rapidly to send bird very high
-      for (int i = 0; i < 20; i++) {
+      for (int i = 0; i < 40; i++) {
         await tester.tap(find.byType(GestureDetector));
         await tester.pump(const Duration(milliseconds: 50));
       }
