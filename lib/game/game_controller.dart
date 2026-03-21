@@ -14,6 +14,7 @@ class GameController {
   double groundScrollOffset = 0.0;
   double cloudsScrollOffset = 0.0;
   double _birdStartY = 0;
+  double _screenWidth = 0;
   double _idleTime = 0.0;
   int _wingSequenceIndex = 0;
   Duration _wingFrameTimer = Duration.zero;
@@ -30,6 +31,7 @@ class GameController {
     bird = Bird(posY: birdStartY);
     _birdStartY = birdStartY;
     this.groundTopY = groundTopY;
+    _screenWidth = screenWidth;
     pipePool = PipePool(
       groundTopY: groundTopY,
       screenWidth: screenWidth,
@@ -47,27 +49,48 @@ class GameController {
     } else if (gamePhase == GamePhase.playing) {
       bird.jump(GameConstants.jumpVelocity);
     }
+    // dying and gameOver: ignore taps (gameOver tap handled in task 4)
   }
 
   void update(double dt) {
     if (!_initialized) return;
     if (dt > 0.1) return;
 
-    final groundDistance = GameConstants.groundScrollSpeed * dt;
-    groundScrollOffset += groundDistance;
-    cloudsScrollOffset += GameConstants.cloudsScrollSpeed * dt;
-    pipePool.update(groundDistance);
-
     if (gamePhase == GamePhase.idle) {
+      final groundDistance = GameConstants.groundScrollSpeed * dt;
+      groundScrollOffset += groundDistance;
+      cloudsScrollOffset += GameConstants.cloudsScrollSpeed * dt;
+      pipePool.update(groundDistance);
+
       _idleTime += dt;
       final bobOffset =
           sin(_idleTime * 2 * pi * GameConstants.bobFrequency) *
               GameConstants.bobAmplitude;
       bird.posY = _birdStartY + bobOffset;
-    } else {
+    } else if (gamePhase == GamePhase.playing) {
+      final groundDistance = GameConstants.groundScrollSpeed * dt;
+      groundScrollOffset += groundDistance;
+      cloudsScrollOffset += GameConstants.cloudsScrollSpeed * dt;
+      pipePool.update(groundDistance);
+
       bird.update(dt, GameConstants.gravity);
-      bird.clampToGround(groundTopY, GameConstants.birdHeight);
+      if (_checkPipeCollisions()) {
+        gamePhase = GamePhase.dying;
+        return;
+      }
+      final hitGround = bird.clampToGround(groundTopY, GameConstants.birdHeight);
+      if (hitGround) {
+        gamePhase = GamePhase.gameOver;
+        return;
+      }
+    } else if (gamePhase == GamePhase.dying) {
+      bird.update(dt, GameConstants.gravity);
+      final hitGround = bird.clampToGround(groundTopY, GameConstants.birdHeight);
+      if (hitGround) {
+        gamePhase = GamePhase.gameOver;
+      }
     }
+    // gameOver: nothing updates
 
     _updateWingAnimation(dt);
   }
@@ -77,7 +100,39 @@ class GameController {
     return bird.rotation;
   }
 
+  ({double left, double right, double top, double bottom}) get _birdRect {
+    final centerX = _screenWidth / 2;
+    return (
+      left: centerX - GameConstants.birdWidth / 2,
+      right: centerX + GameConstants.birdWidth / 2,
+      top: bird.posY,
+      bottom: bird.posY + GameConstants.birdHeight,
+    );
+  }
+
+  bool _checkPipeCollisions() {
+    final birdRect = _birdRect;
+    for (final pipe in pipePool.pipes) {
+      final pipeLeft = pipe.posX - GameConstants.pipeCapWidth / 2;
+      final pipeRight = pipe.posX + GameConstants.pipeCapWidth / 2;
+
+      final horizontalOverlap =
+          birdRect.right > pipeLeft && birdRect.left < pipeRight;
+      if (!horizontalOverlap) continue;
+
+      final inGap = birdRect.top >= pipe.gapTop && birdRect.bottom <= pipe.gapBottom;
+      if (!inGap) return true;
+    }
+    return false;
+  }
+
   void _updateWingAnimation(double dt) {
+    if (gamePhase == GamePhase.dying || gamePhase == GamePhase.gameOver) {
+      bird.currentWing = Wing.mid;
+      _wingFrameTimer = Duration.zero;
+      return;
+    }
+
     if (gamePhase == GamePhase.idle || bird.velocityY <= 0) {
       _wingFrameTimer += Duration(microseconds: (dt * 1000000).round());
       if (_wingFrameTimer >= GameConstants.wingFrameDuration) {
