@@ -50,8 +50,22 @@ class GameController {
       pipePool.reset();
     } else if (gamePhase == GamePhase.playing) {
       bird.jump(GameConstants.jumpVelocity);
+    } else if (gamePhase == GamePhase.gameOver) {
+      _resetToIdle();
     }
-    // dying and gameOver: ignore taps (gameOver tap handled in task 4)
+    // dying: ignore taps
+  }
+
+  void _resetToIdle() {
+    gamePhase = GamePhase.idle;
+    bird.posY = _birdStartY;
+    bird.velocityY = 0.0;
+    bird.currentWing = Wing.mid;
+    score = 0;
+    _idleTime = 0.0;
+    _wingSequenceIndex = 0;
+    _wingFrameTimer = Duration.zero;
+    pipePool.reset();
   }
 
   void update(double dt) {

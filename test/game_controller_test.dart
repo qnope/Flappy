@@ -298,6 +298,71 @@ void main() {
     });
   });
 
+  group('Game over reset', () {
+    test('tap during gameOver resets to idle', () {
+      controller.onTap(); // idle -> playing
+      controller.gamePhase = GamePhase.gameOver;
+
+      controller.onTap();
+      expect(controller.gamePhase, equals(GamePhase.idle));
+    });
+
+    test('bird position resets after gameOver', () {
+      controller.onTap(); // idle -> playing
+      controller.bird.posY = 350;
+      controller.bird.velocityY = 500;
+      controller.gamePhase = GamePhase.gameOver;
+
+      controller.onTap();
+      expect(controller.bird.posY, equals(200));
+      expect(controller.bird.velocityY, equals(0));
+    });
+
+    test('score resets after gameOver', () {
+      controller.onTap(); // idle -> playing
+      controller.score = 10;
+      controller.gamePhase = GamePhase.gameOver;
+
+      controller.onTap();
+      expect(controller.score, equals(0));
+    });
+
+    test('pipes reset after gameOver', () {
+      controller.onTap(); // idle -> playing
+      // Move pipes by updating a few frames
+      for (int i = 0; i < 50; i++) {
+        controller.update(0.016);
+        if (controller.gamePhase != GamePhase.playing) break;
+      }
+      controller.gamePhase = GamePhase.gameOver;
+
+      controller.onTap();
+      // First pipe should be at screenWidth + firstPipeOffset = 360 + 350 = 710
+      expect(controller.pipePool.pipes[0].posX, equals(710));
+    });
+
+    test('full cycle: idle -> playing -> dying -> gameOver -> idle', () {
+      expect(controller.gamePhase, equals(GamePhase.idle));
+
+      controller.onTap(); // idle -> playing
+      expect(controller.gamePhase, equals(GamePhase.playing));
+
+      controller.gamePhase = GamePhase.dying; // simulate collision
+      controller.bird.posY = 350;
+      controller.bird.velocityY = 500;
+
+      // Update until bird hits ground and transitions to gameOver
+      for (int i = 0; i < 200; i++) {
+        controller.update(0.016);
+        if (controller.gamePhase == GamePhase.gameOver) break;
+      }
+      expect(controller.gamePhase, equals(GamePhase.gameOver));
+
+      controller.onTap(); // gameOver -> idle
+      expect(controller.gamePhase, equals(GamePhase.idle));
+    });
+  });
+
   group('Score tracking', () {
     test('score starts at 0', () {
       expect(controller.score, equals(0));
