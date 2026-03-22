@@ -8,9 +8,11 @@ in `lib/game/`.
 
 ## Game Loop
 
-`GameScreen` is a thin `StatefulWidget` shell using `SingleTickerProviderStateMixin`.
-A `Ticker` fires every frame (~60fps) and calls `GameController.update(dt)`.
-`GameScreen` then calls `setState()` to trigger a rebuild with the updated state.
+`GameScreen` is a `StatefulWidget` acting as a **phase switcher**. It uses
+`SingleTickerProviderStateMixin` with a `Ticker` firing every frame (~60fps).
+Each tick calls `GameController.update(dt)`, then `setState()` triggers a
+rebuild that delegates rendering to the phase widget matching the current
+`GamePhase`.
 
 ```
 Ticker (every frame)
@@ -18,17 +20,16 @@ Ticker (every frame)
   └─ GameController.update(dt)
        │
        ├─ scroll offsets: ground and clouds advance continuously
-       │
        ├─ pipe pool: pipes move left at ground speed, recycle off-screen
-       │
        ├─ idle phase:  sinusoidal bobbing, wing animation cycling
+       ├─ playing phase: Bird.update(dt, gravity), collision checks
        │
-       ├─ playing phase:
-       │    ├─ Bird.update(dt, gravity)
-       │    ├─ Bird.clampToGround(...)
-       │    └─ wing animation (cycle when rising, freeze when falling)
-       │
-       └─ GameScreen calls setState() to rebuild widget tree
+       └─ GameScreen.setState()
+            └─ switch (gamePhase)
+                 ├─ idle    → IdlePhaseWidget
+                 ├─ playing → PlayingPhaseWidget
+                 ├─ dying   → DyingPhaseWidget
+                 └─ gameOver → GameOverPhaseWidget
 ```
 
 ## Game Phases
@@ -112,13 +113,57 @@ with a stretchable body and a fixed cap. The bottom cap is flipped vertically.
 
 ### Rendering Order
 
-Layers are rendered in `GameScreen`'s Stack from back to front:
-`background → clouds → pipes → bird → ground → score → game over overlay`
+Layers are rendered via `GameLayersWidget`'s Stack from back to front:
+`background → clouds → pipes → bird → ground → overlays`
 
-The score display is visible during `playing` and `dying` phases. The game over
-overlay fades in with a 500ms animation when phase reaches `gameOver`.
+Each phase widget passes its own overlays (score text, leaderboard, etc.)
+to `GameLayersWidget` via the `overlays` parameter.
 
-## Widget Components
+## Phase Widgets
+
+Each game phase has its own dedicated widget. All compose `GameLayersWidget`
+(the shared visual stack) and add phase-specific overlays.
+
+| Widget | Overlays |
+|--------|----------|
+| `IdlePhaseWidget` | "Tap to start", last score, leaderboard (if scores exist) |
+| `PlayingPhaseWidget` | Live score counter |
+| `DyingPhaseWidget` | Score counter (frozen) |
+| `GameOverPhaseWidget` | "Game Over", final score, "New High Score!" indicator, leaderboard, "Tap to restart" |
+
+### GameLayersWidget
+
+Reusable stateless widget that builds the shared rendering stack:
+`background → clouds → pipes → bird → ground → overlays`. All phase
+widgets pass their scroll offsets, bird state, pipes, and overlay widgets
+to `GameLayersWidget` via constructor parameters.
+
+### LeaderboardWidget
+
+Displays the top 10 scores in a styled table (rank, score, date). Supports
+an optional `highlightIndex` to gold-highlight a new high score entry.
+Returns an empty `SizedBox` when the score list is empty.
+
+## Score Persistence
+
+### ScoreEntry (`score_entry.dart`)
+
+A Hive `@HiveType(typeId: 0)` with two fields: `score` (int) and `date`
+(DateTime). Code-generated adapter via `hive_generator`.
+
+### ScoreRepository (`score_repository.dart`)
+
+Hive-backed repository managing the top 10 scores:
+- **`addScore(score, date)`** -- Inserts entry, prunes beyond top 10
+- **`getTopScores()`** -- Returns up to 10 entries sorted by score desc
+- **`getLastScore()`** -- Most recent entry by date
+- **`isNewHighScore(score)`** -- True if score exceeds the current #1
+- **`clear()`** -- Wipes all entries (used in tests)
+
+Constructor takes a `Box<ScoreEntry>` for testability. The static `create()`
+factory opens the Hive box for production use.
+
+## Other Widget Components
 
 - **`BackgroundWidget`** -- Stateless widget rendering static sky SVG with
   `BoxFit.cover`.

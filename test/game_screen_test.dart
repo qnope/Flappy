@@ -29,9 +29,8 @@ void main() {
     _scoreRepo = await ScoreRepository.create();
   });
 
-  tearDownAll(() async {
-    await Hive.close();
-    await _tempDir.delete(recursive: true);
+  tearDownAll(() {
+    _tempDir.deleteSync(recursive: true);
   });
 
   group('GameScreen rendering', () {

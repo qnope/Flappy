@@ -13,27 +13,30 @@ incrementally, feature by feature.
 │              App Layer (lib/)            │
 │                                         │
 │  main.dart ──▶ GameScreen               │
-│  MaterialApp     (main gameplay screen) │
+│  MaterialApp     (Hive init + routing)  │
 └──────────────────┬──────────────────────┘
                    │
 ┌──────────────────▼──────────────────────┐
 │          Game Layer (lib/game/)          │
 │                                         │
-│  game_screen.dart      (layout shell)   │
+│  game_screen.dart      (phase switcher) │
 │  game_controller.dart  (game logic)     │
-│  bird.dart             (entity model)   │
-│  bird_widget.dart      (SVG renderer)   │
-│  pipe.dart             (pipe model)     │
-│  pipe_pool.dart        (pipe recycling) │
-│  pipe_widget.dart      (pipe renderer)  │
-│  background_widget.dart (BG renderer)   │
-│  ground_widget.dart    (ground render)  │
-│  clouds_widget.dart    (clouds render)  │
-│  scrolling_layer_widget.dart (scroll)   │
-│  wing.dart             (wing enum)      │
-│  game_assets.dart      (asset paths)    │
-│  game_constants.dart   (tuning values)  │
-│  game_state.dart       (game phases)    │
+│  game_layers_widget.dart (shared stack) │
+│  idle_phase_widget.dart    (idle UI)    │
+│  playing_phase_widget.dart (play UI)    │
+│  dying_phase_widget.dart   (dying UI)   │
+│  game_over_phase_widget.dart (GO UI)    │
+│  leaderboard_widget.dart (top 10 list)  │
+│  score_repository.dart (Hive CRUD)      │
+│  score_entry.dart      (Hive model)     │
+│  bird.dart / bird_widget.dart           │
+│  pipe.dart / pipe_pool.dart             │
+│  pipe_widget.dart                       │
+│  background_widget.dart                 │
+│  ground_widget.dart / clouds_widget.dart│
+│  scrolling_layer_widget.dart            │
+│  wing.dart / game_assets.dart           │
+│  game_constants.dart / game_state.dart  │
 └──────────────────┬──────────────────────┘
                    │ loads via flutter_svg
 ┌──────────────────▼──────────────────────┐
@@ -48,20 +51,22 @@ incrementally, feature by feature.
 ┌─────────────────────────────────────────┐
 │              Tests (test/)              │
 │                                         │
-│  wing_test.dart           (unit tests)  │
-│  bird_test.dart           (unit tests)  │
-│  pipe_test.dart           (unit tests)  │
-│  pipe_pool_test.dart      (unit tests)  │
-│  game_controller_test.dart(unit tests)  │
-│  pipe_widget_test.dart    (widget)      │
-│  background_widget_test.dart (widget)   │
-│  ground_widget_test.dart  (widget)      │
-│  clouds_widget_test.dart  (widget)      │
-│  scrolling_layer_widget_test.dart       │
-│  game_screen_test.dart    (widget)      │
-│  game_flow_integration_test.dart        │
-│  asset_existence_test.dart              │
-│  asset_rendering_test.dart              │
+│  wing_test / bird_test / pipe_test      │
+│  pipe_pool_test / game_controller_test  │
+│  score_repository_test  (unit tests)    │
+│  pipe_widget_test / background_widget.. │
+│  ground_widget_test / clouds_widget..   │
+│  scrolling_layer_widget_test            │
+│  game_layers_widget_test                │
+│  idle_phase_widget_test                 │
+│  playing_phase_widget_test              │
+│  dying_phase_widget_test                │
+│  game_over_phase_widget_test            │
+│  leaderboard_widget_test  (widget)      │
+│  game_screen_test         (widget)      │
+│  game_flow_integration_test             │
+│  score_persistence_integration_test     │
+│  asset_existence / asset_rendering      │
 └─────────────────────────────────────────┘
 ```
 
@@ -69,10 +74,18 @@ incrementally, feature by feature.
 
 | Layer | Path | Description |
 |-------|------|-------------|
-| App | `lib/main.dart` | Entry point. Creates `MaterialApp` with `GameScreen` as home. |
+| App | `lib/main.dart` | Entry point. Initializes Hive, creates `ScoreRepository`, launches `GameScreen`. |
 | App | `lib/asset_preview_screen.dart` | Scrollable screen previewing all 7 SVG sprites. |
-| Game | `lib/game/game_screen.dart` | Thin layout shell: Ticker, LayoutBuilder, widget tree. |
+| Game | `lib/game/game_screen.dart` | Phase switcher: Ticker, LayoutBuilder, delegates to phase widgets. |
 | Game | `lib/game/game_controller.dart` | Plain Dart class owning all game logic and state. |
+| Game | `lib/game/game_layers_widget.dart` | Shared visual stack (background, clouds, pipes, bird, ground + overlays). |
+| Game | `lib/game/idle_phase_widget.dart` | Idle phase: "Tap to start", last score, leaderboard. |
+| Game | `lib/game/playing_phase_widget.dart` | Playing phase: live score display. |
+| Game | `lib/game/dying_phase_widget.dart` | Dying phase: score display, bird falling. |
+| Game | `lib/game/game_over_phase_widget.dart` | Game over: final score, leaderboard, new high score indicator. |
+| Game | `lib/game/leaderboard_widget.dart` | Top 10 scores table with rank, score, date, and highlight. |
+| Game | `lib/game/score_repository.dart` | Hive-backed CRUD for top 10 scores. |
+| Game | `lib/game/score_entry.dart` | Hive `@HiveType` model: score + date. |
 | Game | `lib/game/bird.dart` | Bird entity: vertical position, physics, wing state, rotation. |
 | Game | `lib/game/bird_widget.dart` | Stateless SVG bird renderer with rotation. |
 | Game | `lib/game/pipe.dart` | Pipe data model: position, gap center, gap size, computed edges. |
@@ -87,25 +100,13 @@ incrementally, feature by feature.
 | Game | `lib/game/game_constants.dart` | Physics, dimensions, and animation tuning values. |
 | Game | `lib/game/game_state.dart` | `GamePhase` enum: `idle`, `playing`, `dying`, `gameOver`. |
 | Assets | `assets/images/` | 8 SVG game sprites registered in `pubspec.yaml`. |
-| Tests | `test/wing_test.dart` | Unit tests for Wing enum and animation sequence. |
-| Tests | `test/bird_test.dart` | Unit tests for Bird entity (physics, rotation, wing). |
-| Tests | `test/pipe_test.dart` | Unit tests for Pipe model gap computations. |
-| Tests | `test/pipe_pool_test.dart` | Unit tests for PipePool recycling, spacing, and reset. |
-| Tests | `test/game_controller_test.dart` | Unit tests for GameController logic incl. pipe integration. |
-| Tests | `test/pipe_widget_test.dart` | Widget tests for PipeWidget rendering and positioning. |
-| Tests | `test/background_widget_test.dart` | Widget tests for BackgroundWidget. |
-| Tests | `test/ground_widget_test.dart` | Widget tests for GroundWidget. |
-| Tests | `test/clouds_widget_test.dart` | Widget tests for CloudsWidget. |
-| Tests | `test/scrolling_layer_widget_test.dart` | Widget tests for ScrollingLayerWidget tiling and clipping. |
-| Tests | `test/game_screen_test.dart` | Widget tests for rendering, interaction, and animation. |
-| Tests | `test/game_flow_integration_test.dart` | Integration tests for full game flow. |
-| Tests | `test/asset_existence_test.dart` | Unit tests for file existence and SVG validity. |
-| Tests | `test/asset_rendering_test.dart` | Widget tests for rendering, dimensions, and transforms. |
 
 ## Key Dependencies
 
 - **Flutter SDK** ^3.11.0
 - **flutter_svg** ^2.2.4 -- renders SVG assets as widgets
+- **hive** ^2.2.3 / **hive_flutter** ^1.1.0 -- local key-value storage for scores
+- **hive_generator** / **build_runner** (dev) -- code generation for Hive TypeAdapters
 
 ## Design Principles
 

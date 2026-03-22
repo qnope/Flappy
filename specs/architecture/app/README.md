@@ -11,11 +11,13 @@ The app layer contains the Flutter widget code that bootstraps the application.
 
 ## Entry Point (`main.dart`)
 
-`MyApp` creates a `MaterialApp` with:
+`main()` is async: it initializes Hive (via `Hive.initFlutter()`), registers
+the `ScoreEntryAdapter`, and creates a `ScoreRepository` before calling
+`runApp()`. `MyApp` creates a `MaterialApp` with:
 
 - **Title:** `'Flappy'`
 - **Theme:** `ColorScheme.fromSeed(seedColor: Colors.deepPurple)`
-- **Home:** `GameScreen()` (the main gameplay screen from `lib/game/`)
+- **Home:** `GameScreen(scoreRepository: scoreRepo)` (the main gameplay screen from `lib/game/`)
 
 ## `AssetPreviewScreen`
 

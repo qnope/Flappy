@@ -50,10 +50,10 @@ class ScoreRepository {
   }
 
   bool isNewHighScore(int score) {
-    if (_box.length < 10) return true;
+    if (_box.isEmpty) return true;
 
     final topScores = getTopScores();
-    return score > topScores.last.score;
+    return score > topScores.first.score;
   }
 
   Future<void> clear() async {
