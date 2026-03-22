@@ -52,38 +52,48 @@ class IdlePhaseWidget extends StatelessWidget {
 
     overlays.add(tapTextAligned);
 
-    if (lastScore != null) {
-      const lastScoreTextStyle = TextStyle(
-        fontSize: 20,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
-        shadows: [
-          Shadow(blurRadius: 4, color: Colors.black54),
-        ],
+    if (lastScore != null || topScores.isNotEmpty) {
+      final scoreChildren = <Widget>[];
+
+      if (lastScore != null) {
+        const lastScoreTextStyle = TextStyle(
+          fontSize: 20,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          shadows: [
+            Shadow(blurRadius: 4, color: Colors.black54),
+          ],
+        );
+
+        final lastScoreText = Text(
+          'Last Score: $lastScore',
+          style: lastScoreTextStyle,
+        );
+
+        final lastScorePadding = Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: lastScoreText,
+        );
+
+        scoreChildren.add(lastScorePadding);
+      }
+
+      if (topScores.isNotEmpty) {
+        final leaderboard = LeaderboardWidget(scores: topScores);
+        scoreChildren.add(leaderboard);
+      }
+
+      final scoreColumn = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: scoreChildren,
       );
 
-      final lastScoreText = Text(
-        'Last Score: $lastScore',
-        style: lastScoreTextStyle,
+      final scoreColumnAligned = Align(
+        alignment: const Alignment(0, 0.3),
+        child: scoreColumn,
       );
 
-      final lastScoreAligned = Align(
-        alignment: const Alignment(0, 0.05),
-        child: lastScoreText,
-      );
-
-      overlays.add(lastScoreAligned);
-    }
-
-    if (topScores.isNotEmpty) {
-      final leaderboard = LeaderboardWidget(scores: topScores);
-
-      final leaderboardAligned = Align(
-        alignment: const Alignment(0, 0.5),
-        child: leaderboard,
-      );
-
-      overlays.add(leaderboardAligned);
+      overlays.add(scoreColumnAligned);
     }
 
     final gameLayers = GameLayersWidget(

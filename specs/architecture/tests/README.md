@@ -3,8 +3,9 @@
 ## Overview
 
 Tests are organized in three tiers: unit tests for pure logic, widget tests
-for rendering and interaction, and integration tests for full game flows. No
-mocking is used; tests operate on actual assets and the real Flutter renderer.
+for rendering and interaction, and integration tests for full game flows.
+`ScoreRepository` tests use a temporary Hive directory for isolation.
+A shared `test/test_helpers.dart` provides Hive setup utilities.
 
 ## Test Files
 
@@ -109,6 +110,61 @@ Tests `PipePool` with a seeded `Random(42)` for determinism.
 | **Clipping** | Uses UnconstrainedBox with Clip.hardEdge |
 | **Scroll offset** | Renders correctly with non-zero offset |
 
+### `test/score_repository_test.dart` (Unit)
+
+Tests `ScoreRepository` with a temp Hive directory per test.
+
+| Group | What is verified |
+|---|---|
+| **addScore** | Entries stored and retrievable |
+| **Top 10 limit** | Excess entries pruned, keeping highest scores |
+| **Sort order** | Scores sorted descending; ties broken by date |
+| **getLastScore** | Returns most recent entry by date |
+| **isNewHighScore** | True when score exceeds current #1, true when empty |
+| **clear** | All entries removed |
+
+### `test/leaderboard_widget_test.dart` (Widget)
+
+| Group | What is verified |
+|---|---|
+| **Rendering** | Table with rank, score, and date columns |
+| **Empty state** | Returns empty SizedBox when no scores |
+| **Highlight** | Gold styling applied to highlighted index |
+| **New High Score** | "New High Score!" banner shown when highlightIndex set |
+
+### `test/game_layers_widget_test.dart` (Widget)
+
+| Group | What is verified |
+|---|---|
+| **Rendering** | Background, clouds, bird, ground, and pipes present |
+| **Overlays** | Custom overlay widgets rendered on top |
+
+### `test/idle_phase_widget_test.dart` (Widget)
+
+| Group | What is verified |
+|---|---|
+| **Rendering** | "Tap to start" text, last score, leaderboard |
+| **Empty state** | No score section when no scores exist |
+
+### `test/playing_phase_widget_test.dart` (Widget)
+
+| Group | What is verified |
+|---|---|
+| **Rendering** | Live score counter displayed |
+
+### `test/dying_phase_widget_test.dart` (Widget)
+
+| Group | What is verified |
+|---|---|
+| **Rendering** | Score counter displayed (frozen) |
+
+### `test/game_over_phase_widget_test.dart` (Widget)
+
+| Group | What is verified |
+|---|---|
+| **Rendering** | Game over text, final score, leaderboard, restart hint |
+| **New high score** | "New High Score!" indicator and highlight |
+
 ### `test/game_screen_test.dart` (Widget)
 
 Tests `GameScreen` via `tester.pumpWidget()` with real SVG rendering.
@@ -119,8 +175,8 @@ Tests `GameScreen` via `tester.pumpWidget()` with real SVG rendering.
 | **Tap interaction** | First tap starts game (removes idle text) |
 | **Wing animation** | Sprite changes over time when idle |
 | **Bird rotation** | Rotation applied after tap and gravity |
-| **Pipes** | Pipe widgets present during idle and playing, correct count matches pool size |
-| **Score display** | Score visible during playing/dying, hidden during idle/gameOver |
+| **Pipes** | Pipe widgets present during idle and playing |
+| **Score display** | Score visible during playing/dying |
 | **Game over overlay** | Overlay with final score and restart hint shown on gameOver |
 
 ### `test/game_flow_integration_test.dart` (Integration)
@@ -133,6 +189,12 @@ Tests the complete gameplay sequence end-to-end.
 | **Ground collision** | Ground hit during playing triggers gameOver phase |
 | **Full lifecycle** | idle → playing → dying → gameOver → idle (tap to restart) |
 | **Score persistence** | Score maintained through dying phase, cleared on restart |
+
+### `test/score_persistence_integration_test.dart` (Integration)
+
+| Group | What is verified |
+|---|---|
+| **Persistence** | Scores survive simulated app restart (close + reopen Hive box) |
 
 ### `test/asset_existence_test.dart` (Unit)
 
@@ -153,8 +215,8 @@ Tests the complete gameplay sequence end-to-end.
 
 ```bash
 flutter test                                        # all tests
-flutter test test/bird_test.dart                    # unit only
-flutter test test/game_controller_test.dart         # unit only
+flutter test test/score_repository_test.dart        # unit only
+flutter test test/leaderboard_widget_test.dart      # widget only
 flutter test test/game_screen_test.dart             # widget only
 flutter test test/game_flow_integration_test.dart   # integration only
 ```

@@ -29,3 +29,4 @@ Flappy bird like game
 3. Always add new feature incrementally
 4. Always make reusable component
 5. Try to optimize for performance when it's possible.
+6. Use flutter analyze when done.

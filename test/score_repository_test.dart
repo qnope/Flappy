@@ -131,53 +131,41 @@ void main() {
   });
 
   group('isNewHighScore', () {
-    test('Fewer than 10 entries always returns true', () async {
-      final repo = await createRepo('fewer_than_10');
+    test('No entries returns true', () async {
+      final repo = await createRepo('no_entries');
+
+      expect(repo.isNewHighScore(0), isTrue);
+      expect(repo.isNewHighScore(1), isTrue);
+    });
+
+    test('Score higher than best returns true', () async {
+      final repo = await createRepo('higher_than_best');
       final date = DateTime(2026, 1, 1);
 
       await repo.addScore(100, date);
       await repo.addScore(200, date.add(const Duration(hours: 1)));
 
-      // Even a score of 0 should be a new high score when fewer than 10
-      expect(repo.isNewHighScore(0), isTrue);
-      expect(repo.isNewHighScore(1), isTrue);
-      expect(repo.isNewHighScore(999), isTrue);
+      expect(repo.isNewHighScore(201), isTrue);
     });
 
-    test('10 entries, score higher than lowest returns true', () async {
-      final repo = await createRepo('higher_than_lowest');
-      final baseDate = DateTime(2026, 1, 1);
+    test('Score equal to best returns false', () async {
+      final repo = await createRepo('equal_to_best');
+      final date = DateTime(2026, 1, 1);
 
-      for (int i = 1; i <= 10; i++) {
-        await repo.addScore(i * 10, baseDate.add(Duration(hours: i)));
-      }
+      await repo.addScore(100, date);
+      await repo.addScore(200, date.add(const Duration(hours: 1)));
 
-      // Lowest score is 10; a score of 11 should qualify
-      expect(repo.isNewHighScore(11), isTrue);
+      expect(repo.isNewHighScore(200), isFalse);
     });
 
-    test('10 entries, score equal to lowest returns false', () async {
-      final repo = await createRepo('equal_to_lowest');
-      final baseDate = DateTime(2026, 1, 1);
+    test('Score lower than best returns false', () async {
+      final repo = await createRepo('lower_than_best');
+      final date = DateTime(2026, 1, 1);
 
-      for (int i = 1; i <= 10; i++) {
-        await repo.addScore(i * 10, baseDate.add(Duration(hours: i)));
-      }
+      await repo.addScore(100, date);
+      await repo.addScore(200, date.add(const Duration(hours: 1)));
 
-      // Lowest score is 10; equal should not qualify
-      expect(repo.isNewHighScore(10), isFalse);
-    });
-
-    test('10 entries, score lower than lowest returns false', () async {
-      final repo = await createRepo('lower_than_lowest');
-      final baseDate = DateTime(2026, 1, 1);
-
-      for (int i = 1; i <= 10; i++) {
-        await repo.addScore(i * 10, baseDate.add(Duration(hours: i)));
-      }
-
-      // Lowest score is 10; 5 should not qualify
-      expect(repo.isNewHighScore(5), isFalse);
+      expect(repo.isNewHighScore(150), isFalse);
     });
   });
 
