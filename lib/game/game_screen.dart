@@ -9,9 +9,12 @@ import 'game_controller.dart';
 import 'game_state.dart';
 import 'ground_widget.dart';
 import 'pipe_widget.dart';
+import 'score_repository.dart';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
+  final ScoreRepository scoreRepository;
+
+  const GameScreen({super.key, required this.scoreRepository});
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -21,11 +24,14 @@ class _GameScreenState extends State<GameScreen>
     with SingleTickerProviderStateMixin {
   late Ticker _ticker;
   late GameController _controller;
+  // ignore: unused_field — will be wired in a later task
+  late ScoreRepository _scoreRepository;
   Duration _lastTickTime = Duration.zero;
 
   @override
   void initState() {
     super.initState();
+    _scoreRepository = widget.scoreRepository;
     _controller = GameController();
     _ticker = createTicker(_onTick);
     _ticker.start();

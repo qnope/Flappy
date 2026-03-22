@@ -1,15 +1,37 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
 import 'package:flappy/game/game_screen.dart';
+import 'package:flappy/game/score_entry.dart';
+import 'package:flappy/game/score_repository.dart';
+
+late Directory _tempDir;
+late ScoreRepository _scoreRepo;
 
 void main() {
+  setUpAll(() async {
+    if (!Hive.isAdapterRegistered(0)) {
+      Hive.registerAdapter(ScoreEntryAdapter());
+    }
+    _tempDir = await Directory.systemTemp.createTemp('game_flow_test_');
+    Hive.init(_tempDir.path);
+    _scoreRepo = await ScoreRepository.create();
+  });
+
+  tearDownAll(() async {
+    await Hive.close();
+    await _tempDir.delete(recursive: true);
+  });
+
   group('Game flow integration', () {
     testWidgets('full game flow: idle, tap to start, gravity, tap to jump',
         (tester) async {
       await tester.binding.setSurfaceSize(const Size(288, 512));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(const MaterialApp(home: GameScreen()));
+      await tester.pumpWidget(MaterialApp(home: GameScreen(scoreRepository: _scoreRepo)));
       await tester.pump();
 
       // Verify idle state
@@ -59,7 +81,7 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(288, 512));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(const MaterialApp(home: GameScreen()));
+      await tester.pumpWidget(MaterialApp(home: GameScreen(scoreRepository: _scoreRepo)));
       await tester.pump();
 
       // Tap to start
@@ -91,7 +113,7 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(288, 512));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(const MaterialApp(home: GameScreen()));
+      await tester.pumpWidget(MaterialApp(home: GameScreen(scoreRepository: _scoreRepo)));
       await tester.pump();
 
       // Verify idle state
@@ -127,7 +149,7 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(288, 512));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(const MaterialApp(home: GameScreen()));
+      await tester.pumpWidget(MaterialApp(home: GameScreen(scoreRepository: _scoreRepo)));
       await tester.pump();
 
       // Tap to start playing
@@ -150,7 +172,7 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(288, 512));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(const MaterialApp(home: GameScreen()));
+      await tester.pumpWidget(MaterialApp(home: GameScreen(scoreRepository: _scoreRepo)));
       await tester.pump();
 
       // Tap to start

@@ -1,17 +1,39 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hive/hive.dart';
 import 'package:flappy/game/game_screen.dart';
 import 'package:flappy/game/bird_widget.dart';
 import 'package:flappy/game/clouds_widget.dart';
 import 'package:flappy/game/pipe_widget.dart';
 import 'package:flappy/game/game_constants.dart';
+import 'package:flappy/game/score_entry.dart';
+import 'package:flappy/game/score_repository.dart';
+
+late Directory _tempDir;
+late ScoreRepository _scoreRepo;
 
 Widget createTestApp() {
-  return const MaterialApp(home: GameScreen());
+  return MaterialApp(home: GameScreen(scoreRepository: _scoreRepo));
 }
 
 void main() {
+  setUpAll(() async {
+    if (!Hive.isAdapterRegistered(0)) {
+      Hive.registerAdapter(ScoreEntryAdapter());
+    }
+    _tempDir = await Directory.systemTemp.createTemp('game_screen_test_');
+    Hive.init(_tempDir.path);
+    _scoreRepo = await ScoreRepository.create();
+  });
+
+  tearDownAll(() async {
+    await Hive.close();
+    await _tempDir.delete(recursive: true);
+  });
+
   group('GameScreen rendering', () {
     testWidgets('renders background', (tester) async {
       await tester.pumpWidget(createTestApp());
