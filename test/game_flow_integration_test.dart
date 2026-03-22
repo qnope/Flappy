@@ -138,11 +138,8 @@ void main() {
 
       // Verify back in idle
       expect(find.text('Tap to start'), findsOneWidget);
-      // Game over overlay is always in tree but hidden via AnimatedOpacity
-      final animatedOpacity = tester.widget<AnimatedOpacity>(
-        find.byType(AnimatedOpacity),
-      );
-      expect(animatedOpacity.opacity, equals(0.0));
+      // Game over text should not be visible after restart
+      expect(find.text('Game Over'), findsNothing);
     });
 
     testWidgets('score visible during dying phase', (tester) async {

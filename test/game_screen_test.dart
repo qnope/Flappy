@@ -255,17 +255,14 @@ void main() {
   });
 
   group('GameScreen game over overlay', () {
-    testWidgets('game over overlay not visible in idle', (tester) async {
+    testWidgets('game over text not visible in idle', (tester) async {
       await tester.pumpWidget(createTestApp());
       await tester.pump();
 
-      final animatedOpacity = tester.widget<AnimatedOpacity>(
-        find.byType(AnimatedOpacity),
-      );
-      expect(animatedOpacity.opacity, equals(0.0));
+      expect(find.text('Game Over'), findsNothing);
     });
 
-    testWidgets('game over overlay visible in gameOver', (tester) async {
+    testWidgets('game over text visible in gameOver', (tester) async {
       await tester.pumpWidget(createTestApp());
       await tester.pump();
 
@@ -278,10 +275,6 @@ void main() {
         await tester.pump(const Duration(milliseconds: 16));
       }
 
-      final animatedOpacity = tester.widget<AnimatedOpacity>(
-        find.byType(AnimatedOpacity),
-      );
-      expect(animatedOpacity.opacity, equals(1.0));
       expect(find.text('Game Over'), findsOneWidget);
     });
 
@@ -325,11 +318,15 @@ void main() {
   });
 
   group('GameScreen score display', () {
-    testWidgets('score not visible in idle', (tester) async {
+    testWidgets('large score text not visible in idle', (tester) async {
       await tester.pumpWidget(createTestApp());
       await tester.pump();
 
-      expect(find.text('0'), findsNothing);
+      // The playing-phase score (fontSize 48) should not be present in idle.
+      // Leaderboard may show "0" in small text, so we check style specifically.
+      final scoreTexts = tester.widgetList<Text>(find.text('0'));
+      final hasLargeScore = scoreTexts.any((t) => t.style?.fontSize == 48);
+      expect(hasLargeScore, isFalse);
     });
 
     testWidgets('score visible during playing', (tester) async {
